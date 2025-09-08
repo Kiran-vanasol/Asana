@@ -32,11 +32,11 @@ struct PostureView: View {
                         .foregroundColor(Color(hex: "#171717"))
                 }
                 
-//                Spacer()
-//                
-//                Text(title)
-//                    .font(.system(size: 20, weight: .semibold))
-//                    .foregroundColor(Color(hex: "#EB784E"))
+                Spacer()
+                
+                Text("Posture Reset")
+                    .font(.system(size: 28, weight: .semibold))
+                   .foregroundColor(Color(hex: "#EB784E"))
                 
                 Spacer()
                 
@@ -59,17 +59,18 @@ struct PostureView: View {
                             ZStack {
                                 Circle()
                                     .fill(Color(hex: "#C5C884")!)
-                                    .frame(width: 55, height: 55)
+                                    .frame(width: 60, height: 60)
                                 
                                 Image(pose.imageName)
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 40, height: 40)
+                                    .frame(width: 60, height: 60)
                             }
                             
                             Text(pose.name)
-                                .font(.system(size: 18, weight: .medium))
+                                .font(.system(size: 20, weight: .semibold))
                                 .foregroundColor(Color(hex: "#171717"))
+                                
                             
                             Spacer()
                         }
