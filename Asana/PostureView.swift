@@ -96,6 +96,9 @@ struct PostureView: View {
             .padding(.bottom, 12)
         }
         .background(Color(hex: "#EAF2F2").ignoresSafeArea())
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
+//        .background(Color(hex: "#EAF2F2").ignoresSafeArea())
     }
 }
 
