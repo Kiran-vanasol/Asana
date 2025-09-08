@@ -32,11 +32,11 @@ struct PostureView: View {
                         .foregroundColor(Color(hex: "#171717"))
                 }
                 
-                Spacer()
-                
-                Text(title)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(Color(hex: "#EB784E"))
+//                Spacer()
+//                
+//                Text(title)
+//                    .font(.system(size: 20, weight: .semibold))
+//                    .foregroundColor(Color(hex: "#EB784E"))
                 
                 Spacer()
                 
