@@ -159,10 +159,7 @@ struct LoginView: View {
                 Spacer()
                 
                 // Navigate to HomeView when login succeeds
-                NavigationLink(
-                    destination: HomeView(),
-                    isActive: $isLoggedIn
-                ) { EmptyView() }
+            .navigationDestination(isPresented: $isLoggedIn) { HomeView() }
             }
             .padding(.top, 30)
             .background(

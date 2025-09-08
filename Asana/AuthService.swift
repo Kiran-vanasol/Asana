@@ -15,13 +15,27 @@ class AuthService: ObservableObject {
     static let shared = AuthService()
     
     @Published var user: User? = Auth.auth().currentUser
+    private var authStateListenerHandle: AuthStateDidChangeListenerHandle?
+    
+//    private init() {
+//        // Attach listener to track auth state changes
+//        Auth.auth().addStateDidChangeListener { _, user in
+//            self.user = user
+//        }
+//    }
     
     private init() {
-        // Attach listener to track auth state changes
-        Auth.auth().addStateDidChangeListener { _, user in
-            self.user = user
+          // Attach listener to track auth state changes
+          authStateListenerHandle = Auth.auth().addStateDidChangeListener { _, user in
+              self.user = user
+          }
+      }
+    
+    deinit {
+            if let handle = authStateListenerHandle {
+                Auth.auth().removeStateDidChangeListener(handle)
+            }
         }
-    }
     
     // MARK: - Email & Password Authentication
     func signUp(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
