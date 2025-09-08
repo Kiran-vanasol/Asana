@@ -27,7 +27,7 @@ struct PostureView: View {
                 Button(action: {
                     // TODO: Handle dismiss
                 }) {
-                    Image(systemName: "xmark")
+                    Image(systemName: "chevron.backward")
                         .font(.title2)
                         .foregroundColor(Color(hex: "#171717"))
                 }
@@ -35,7 +35,7 @@ struct PostureView: View {
                 Spacer()
                 
                 Text("Posture Reset")
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.system(size: 28, weight: .bold, design: .serif))
                    .foregroundColor(Color(hex: "#EB784E"))
                 
                 Spacer()
@@ -68,7 +68,7 @@ struct PostureView: View {
                             }
                             
                             Text(pose.name)
-                                .font(.system(size: 20, weight: .semibold))
+                                .font(.system(size: 20, weight: .semibold, design: .serif))
                                 .foregroundColor(Color(hex: "#171717"))
                                 
                             
@@ -91,7 +91,7 @@ struct PostureView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(Color(hex: "#EB784E"))
-                    .cornerRadius(14)
+                    .cornerRadius(20)
                     .padding(.horizontal)
             }
             .padding(.bottom, 12)
