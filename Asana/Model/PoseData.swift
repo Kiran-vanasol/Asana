@@ -19,7 +19,5 @@ struct PoseCollections {
         Pose(name: "Pigeon Pose", imageName: "pigeon")
     ]
     
-  
-    
    
 }
