@@ -25,14 +25,10 @@ struct HomeView: View {
                         Spacer()
                         
                         // Profile Image (right aligned)
-                        Image("profile")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 38, height: 38)
-                            .clipShape(Circle())
-                            .overlay(
-                                Circle().stroke(Color.white, lineWidth: 1.5)
-                            )
+                        NavigationLink(destination: ProfileView()) {
+                            ProfileImageView()
+                        }
+
                     }
                     .padding(.horizontal)
                     .padding(.top, 8)
