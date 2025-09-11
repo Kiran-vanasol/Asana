@@ -12,6 +12,8 @@ struct PostureView: View {
     var title: String
     var poses: [Pose]
     
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         VStack(spacing: 0) {
             
@@ -19,6 +21,8 @@ struct PostureView: View {
             HStack {
                 Button(action: {
                     // TODO: Handle dismiss
+                    dismiss()
+                    
                 }) {
                     Image(systemName: "chevron.backward")
                         .font(.title2)

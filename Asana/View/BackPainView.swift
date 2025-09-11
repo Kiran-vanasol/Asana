@@ -10,6 +10,8 @@ import SwiftUI
 struct BackPainView: View {
     var title = "Yoga for Back Pain"
     @StateObject private var viewModel = BackPainViewModel()
+    @Environment(\.dismiss) private var dismiss
+
 
     var body: some View {
         VStack(spacing: 0) {
@@ -17,6 +19,7 @@ struct BackPainView: View {
             HStack {
                 Button(action: {
                     // TODO: Handle dismiss
+                    dismiss()
                 }) {
                     Image(systemName: "chevron.backward")
                         .font(.title2)
