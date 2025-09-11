@@ -36,7 +36,7 @@ struct AsanaNavigationLinks: View {
             }
             
         case "YogaForNeckPain":
-            NavigationLink(destination: Text("Neck Pain View (Coming Soon)"))  {
+            NavigationLink(destination: NeckPainView())  {
                 Image(img)
                     .resizable()
                     .scaledToFill()
