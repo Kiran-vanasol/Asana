@@ -11,6 +11,7 @@ struct NeckPainView: View {
     var title = "Yoga for Neck Pain"
     @StateObject private var viewModel = BackPainViewModel()
     @Environment(\.dismiss) private var dismiss
+//    @State private var startWorkout = false
 
 
     var body: some View {
@@ -87,10 +88,10 @@ struct NeckPainView: View {
                 }
             }
 
-            // Start Button
-            Button(action: {
-                print("Starting flow: \(title)")
-            }) {
+            NavigationLink {
+                           // create a WorkoutViewModel and hand it to the intro view
+                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses))
+        } label:{
                 Text("Let’s Start")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
@@ -108,5 +109,6 @@ struct NeckPainView: View {
         .task {
             await viewModel.fetchPoses(for: "NeckPain")
         }
+      
     }
 }

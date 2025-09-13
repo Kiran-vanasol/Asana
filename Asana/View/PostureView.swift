@@ -7,22 +7,20 @@
 
 import SwiftUI
 
-// MARK: - Posture View
 struct PostureView: View {
-    var title: String
-    var poses: [Pose]
-    
+    var title = "Yoga for Neck Pain"
+    @StateObject private var viewModel = BackPainViewModel()
     @Environment(\.dismiss) private var dismiss
-    
+  
+
+
     var body: some View {
         VStack(spacing: 0) {
-            
             // Header
             HStack {
                 Button(action: {
                     // TODO: Handle dismiss
                     dismiss()
-                    
                 }) {
                     Image(systemName: "chevron.backward")
                         .font(.title2)
@@ -47,40 +45,53 @@ struct PostureView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 12)
-            
-            // List of Poses
-            ScrollView {
-                VStack(spacing: 20) {
-                    ForEach(poses) { pose in
-                        HStack(spacing: 16) {
-                            ZStack {
-                                Circle()
-                                    .fill(Color(hex: "#C5C884")!)
-                                    .frame(width: 60, height: 60)
-                                
-                                Image(pose.imageName)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 60, height: 60)
+            // Poses List
+            if viewModel.isLoading {
+                Spacer()
+                ProgressView("Loading poses...")
+                Spacer()
+            } else if let error = viewModel.errorMessage {
+                Spacer()
+                Text("Error: \(error)")
+                    .foregroundColor(.red)
+                Spacer()
+            } else {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        ForEach(viewModel.poses) { pose in
+                            HStack(spacing: 16) {
+                                AsyncImage(url: URL(string: pose.imageURL)) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 60, height: 60)
+                                        .clipShape(Circle())
+                                } placeholder: {
+                                    ProgressView()
+                                        .frame(width: 60, height: 60)
+                                }
+
+                                Text(pose.name)
+                                    .font(.system(size: 20, weight: .semibold, design: .serif))
+                                    .foregroundColor(Color(hex: "#171717"))
+
+                                Spacer()
                             }
-                            
-                            Text(pose.name)
-                                .font(.system(size: 20, weight: .semibold, design: .serif))
-                                .foregroundColor(Color(hex: "#171717"))
-                            
-                            Spacer()
+                            .padding(.horizontal)
+                            .onAppear {
+                                print("Loading Pose: \(pose.name), URL: \(pose.imageURL)")
+                            }
                         }
-                        .padding(.horizontal)
                     }
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
                 }
-                .padding(.top, 8)
-                .padding(.bottom, 16)
             }
-            
-            // Start Button
-            Button(action: {
-                print("Starting flow: \(title)")
-            }) {
+
+            NavigationLink {
+                           // create a WorkoutViewModel and hand it to the intro view
+                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses))
+        } label:{
                 Text("Let’s Start")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
@@ -95,24 +106,9 @@ struct PostureView: View {
         .background(Color(hex: "#EAF2F2").ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-    }
-}
-
-// MARK: - Preview
-struct PostureView_Previews: PreviewProvider {
-    static var previews: some View {
-        PostureView(
-            title: "Posture Reset",
-            poses: [
-                Pose(name: "Mountain Pose", imageName: "mountain"),
-                Pose(name: "Warrior Pose", imageName: "warrior"),
-                Pose(name: "Forward Fold", imageName: "forwardFold"),
-                Pose(name: "Dolphin Pose", imageName: "dolphin"),
-                Pose(name: "Cow Pose", imageName: "cow"),
-                Pose(name: "Cat Pose", imageName: "cat"),
-                Pose(name: "Child’s Pose", imageName: "child"),
-                Pose(name: "Pigeon Pose", imageName: "pigeon")
-            ]
-        )
+        .task {
+            await viewModel.fetchPoses(for: "PostureReset")
+        }
+    
     }
 }

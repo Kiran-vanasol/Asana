@@ -13,4 +13,11 @@ struct APIPose: Identifiable, Codable {
     let name: String
     let imageURL: String
     let category: String
+//    let localImageName: String?
+    
+    // Convenience property for AsyncImage
+    var url: URL? {
+        URL(string: imageURL)
+    }
+
 }

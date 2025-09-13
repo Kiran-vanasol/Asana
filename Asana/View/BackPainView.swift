@@ -11,6 +11,7 @@ struct BackPainView: View {
     var title = "Yoga for Back Pain"
     @StateObject private var viewModel = BackPainViewModel()
     @Environment(\.dismiss) private var dismiss
+//    @State private var startWorkout = false
 
 
     var body: some View {
@@ -88,9 +89,10 @@ struct BackPainView: View {
             }
 
             // Start Button
-            Button(action: {
-                print("Starting flow: \(title)")
-            }) {
+            NavigationLink {
+                           // create a WorkoutViewModel and hand it to the intro view
+                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses))
+        } label:{
                 Text("Let’s Start")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
@@ -108,5 +110,8 @@ struct BackPainView: View {
         .task {
             await viewModel.fetchPoses(for: "BackPain")
         }
+//        .navigationDestination(isPresented: $startWorkout) {
+//                    WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses))
+//        }
     }
 }

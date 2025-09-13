@@ -13,10 +13,7 @@ struct AsanaNavigationLinks: View {
     var body: some View {
         switch img {
         case "YogaForPosture":
-            NavigationLink(destination: PostureView(
-                title: "Yoga For Posture",
-                poses: PoseCollections.yogaForPosture   
-            ))  {
+            NavigationLink(destination: PostureView())  {
                 Image(img)
                     .resizable()
                     .scaledToFill()
