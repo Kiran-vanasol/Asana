@@ -16,6 +16,7 @@ class WorkoutViewModel: ObservableObject {
     @Published var isWorkoutFinished: Bool = false
     @Published var isIntroActive: Bool = true
     @Published var introCountdown: Int = 5
+    @Published var isPaused: Bool = false   // 👈 NEW: track pause state
 
     private var introCancellable: AnyCancellable?
     private var workoutCancellable: AnyCancellable?
@@ -24,11 +25,11 @@ class WorkoutViewModel: ObservableObject {
         self.poses = poses
     }
 
-    /// Starts the 5-second intro countdown
+    // MARK: - Intro
     func startIntro() {
         introCountdown = 5
         isIntroActive = true
-        introCancellable?.cancel() // stop old intro timer
+        introCancellable?.cancel()
 
         introCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
@@ -39,23 +40,30 @@ class WorkoutViewModel: ObservableObject {
                     self.introCountdown -= 1
                 } else {
                     self.isIntroActive = false
-                    self.introCancellable?.cancel() // stop intro timer
+                    self.introCancellable?.cancel()
                 }
             }
     }
 
-    /// Starts the workout session
+    // MARK: - Workout
     func startWorkout() {
         guard !poses.isEmpty else { return }
         currentIndex = 0
         timeRemaining = 40
         isWorkoutFinished = false
-        workoutCancellable?.cancel() // stop old workout timer
+        isPaused = false
+
+        startTimer()
+    }
+
+    private func startTimer() {
+        workoutCancellable?.cancel()
 
         workoutCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
+                guard !self.isPaused else { return }  // 👈 Stop if paused
 
                 if self.timeRemaining > 1 {
                     self.timeRemaining -= 1
@@ -65,7 +73,19 @@ class WorkoutViewModel: ObservableObject {
             }
     }
 
-    /// Move to the next pose
+    func pauseWorkout() {
+        isPaused = true
+    }
+
+    func resumeWorkout() {
+        isPaused = false
+    }
+
+    func togglePauseResume() {
+        isPaused.toggle()
+    }
+
+    // MARK: - Poses
     func advancePose() {
         if currentIndex < poses.count - 1 {
             currentIndex += 1
@@ -75,7 +95,6 @@ class WorkoutViewModel: ObservableObject {
         }
     }
 
-    /// Finish the workout
     func finishWorkout() {
         workoutCancellable?.cancel()
         isWorkoutFinished = true

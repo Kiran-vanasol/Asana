@@ -18,19 +18,26 @@ struct LoginView: View {
                 Text("Āsana.")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color(hex: "#EB784E"))
                     .padding(.top, 40)
                 
-                // Subtitle
-                Text("Come On In.")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.top, 10)
-                
-                Spacer().frame(height: 20)
+//                // Subtitle
+//                Text("Come On In.")
+//                    .font(.title2)
+//                    .fontWeight(.semibold)
+//                    .padding(.top, 10)
+//                
+//                Spacer().frame(height: 20)
                 
                 // Email
                 VStack(alignment: .leading, spacing: 8) {
+                    // Subtitle
+                    Text("Come On In.")
+                        .font(.title)
+                        .fontWeight(.semibold)
+                        .padding(.top, 10)
+                    
+                    Spacer().frame(height: 20)
                     TextField("Email address", text: $viewModel.email)
                         #if os(iOS)
                         .textInputAutocapitalization(.none)
@@ -85,7 +92,7 @@ struct LoginView: View {
                         .foregroundColor(.white)
                         .padding(.vertical, 14)
                         .frame(maxWidth: .infinity)
-                        .background(Color.orange)
+                        .background(Color(hex: "#EB784E"))
                         .cornerRadius(10)
                         .shadow(color: .gray.opacity(0.4), radius: 3, x: 0, y: 3)
                 }

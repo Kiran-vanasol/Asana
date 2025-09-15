@@ -29,7 +29,7 @@ struct WelcomeView: View {
 
                         Text("Āsana.")
                             .font(.system(size: 44, weight: .bold, design: .serif))
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Color(hex: "#EB784E")!)
                     }
 
                     // Subtitle
@@ -49,7 +49,7 @@ struct WelcomeView: View {
                             .padding(.vertical, 14)
                             .padding(.horizontal, 40)
                             .background(
-                                (isHovering ? Color.orange.opacity(0.7) : Color.orange)
+                                (isHovering ? Color(hex: "#EB784E")!.opacity(0.7) : Color(hex: "#EB784E"))
                                     .animation(.easeInOut(duration: 0.2), value: isHovering)
                             )
                             .cornerRadius(30)

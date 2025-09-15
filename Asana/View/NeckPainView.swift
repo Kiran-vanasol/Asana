@@ -19,7 +19,7 @@ struct NeckPainView: View {
             // Header
             HStack {
                 Button(action: {
-                    // TODO: Handle dismiss
+                    
                     dismiss()
                 }) {
                     Image(systemName: "chevron.backward")
@@ -29,7 +29,7 @@ struct NeckPainView: View {
                 
                 Spacer()
                 
-                Text("Back Pain")
+                Text("Neck Pain")
                     .font(.system(size: 28, weight: .bold, design: .serif))
                     .foregroundColor(Color(hex: "#EB784E"))
                 
