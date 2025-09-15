@@ -90,7 +90,7 @@ struct NeckPainView: View {
 
             NavigationLink {
                            // create a WorkoutViewModel and hand it to the intro view
-                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses))
+                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses,  workoutType: "NeckPain"))
         } label:{
                 Text("Let’s Start")
                     .font(.system(size: 18, weight: .semibold))

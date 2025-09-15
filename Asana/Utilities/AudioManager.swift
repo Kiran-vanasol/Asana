@@ -13,8 +13,11 @@ class AudioManager {
 
     private init() {}
 
+    /// Play audio from blue folder references
     func playSound(folder: String, fileName: String, ext: String = "mp3") {
+        // remove the extra "Audio/"
         let path = "\(folder)/\(fileName)"
+        
         guard let url = Bundle.main.url(forResource: path, withExtension: ext) else {
             print("Audio file not found: \(path).\(ext)")
             return
@@ -24,8 +27,9 @@ class AudioManager {
             player = try AVAudioPlayer(contentsOf: url)
             player?.prepareToPlay()
             player?.play()
+            print("Playing sound: \(path).\(ext)")
         } catch {
-            print("Error playing sound \(path): \(error)")
+            print(" Error playing sound \(path): \(error.localizedDescription)")
         }
     }
 

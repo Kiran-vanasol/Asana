@@ -14,13 +14,15 @@ struct WorkoutPlayerView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemGray6) // background like Android
-                .ignoresSafeArea()
+            Color(.systemGray6).ignoresSafeArea()
 
             VStack(spacing: 40) {
-                // Custom back button
+                // Back button
                 HStack {
-                    Button(action: { dismiss() }) {
+                    Button(action: {
+                        vm.finishWorkout() // stop timers + cleanup
+                        dismiss()
+                    }) {
                         Image(systemName: "chevron.left")
                             .font(.title2)
                             .foregroundColor(.black)
@@ -31,15 +33,24 @@ struct WorkoutPlayerView: View {
 
                 Spacer()
 
-                if vm.currentIndex < vm.poses.count {
+                // Intro countdown
+                if vm.isIntroActive {
+                    VStack(spacing: 20) {
+                        Text("Get Ready")
+                            .font(.title)
+                            .fontWeight(.semibold)
+                        Text("\(vm.introCountdown)")
+                            .font(.system(size: 60, weight: .bold, design: .rounded))
+                    }
+                }
+                // Workout content
+                else if vm.currentIndex < vm.poses.count {
                     let pose = vm.poses[vm.currentIndex]
 
                     ZStack {
-                        // Background ring
                         Circle()
                             .stroke(Color.gray.opacity(0.3), lineWidth: 6)
 
-                        // Animated timer progress ring
                         Circle()
                             .trim(from: 0, to: progress)
                             .stroke(Color(hex: "#EB784E") ?? .orange,
@@ -47,7 +58,6 @@ struct WorkoutPlayerView: View {
                             .rotationEffect(.degrees(-90))
                             .animation(.linear(duration: 1), value: vm.timeRemaining)
 
-                        // Pose image
                         if let localImage = UIImage(named: pose.name) {
                             Image(uiImage: localImage)
                                 .resizable()
@@ -67,40 +77,30 @@ struct WorkoutPlayerView: View {
                     }
                     .frame(width: 350, height: 350)
 
-                    // Pose name + info icon
                     HStack(spacing: 6) {
                         Text(pose.name)
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.primary)
-
                         Image(systemName: "info.circle")
                             .foregroundColor(.gray)
                     }
 
-                    // Countdown timer (just number like Android)
                     Text("\(vm.timeRemaining)")
                         .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .foregroundColor(.black)
 
-                    // Control buttons
                     HStack(spacing: 60) {
                         CircleButton(icon: "backward.fill") {
-                            if vm.currentIndex > 0 {
-                                vm.currentIndex -= 1
-                                vm.timeRemaining = 40
-                            }
+                            vm.goBackPose()
+                            
                         }
 
-                        Button(action: {
-                                vm.togglePauseResume()
-                            }) {
-                                Image(systemName: vm.isPaused ? "play.fill" : "pause.fill")
-                                    .font(.system(size: 36))
-                                    .foregroundColor(.white)
-                                    .frame(width: 70, height: 70)
-                                    .background(Circle().fill(Color(hex: "#EB784E") ?? .orange))
-                            }
+                        Button(action: { vm.togglePauseResume() }) {
+                            Image(systemName: vm.isPaused ? "play.fill" : "pause.fill")
+                                .font(.system(size: 36))
+                                .foregroundColor(.white)
+                                .frame(width: 70, height: 70)
+                                .background(Circle().fill(Color(hex: "#EB784E") ?? .orange))
+                        }
 
                         CircleButton(icon: "forward.fill") {
                             vm.advancePose()
@@ -111,8 +111,52 @@ struct WorkoutPlayerView: View {
                 Spacer()
             }
             .padding(.vertical, 20)
+
+            // Up Next popup
+            if vm.showUpNext, let next = vm.upNextPose {
+                VStack {
+                    Spacer()
+                    HStack(spacing: 16) {
+                        if let localImage = UIImage(named: next.name) {
+                            Image(uiImage: localImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        } else {
+                            AsyncImage(url: URL(string: next.imageURL)) { img in
+                                img.resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } placeholder: {
+                                ProgressView()
+                            }
+                        }
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Up Next")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Text(next.name)
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                        }
+
+                        Spacer()
+                    }
+                    .padding()
+                    .background(.white)
+                    .cornerRadius(16)
+                    .shadow(radius: 4)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 40)
+                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .animation(.easeInOut, value: vm.showUpNext)
+            }
         }
-        .navigationBarBackButtonHidden(true) // hide default back
+        .navigationBarBackButtonHidden(true)
         .navigationDestination(isPresented: $goToCompleted) {
             WorkoutCompletedView()
         }
@@ -120,18 +164,18 @@ struct WorkoutPlayerView: View {
             if finished { goToCompleted = true }
         }
         .onAppear {
-            vm.startWorkout()
+            if vm.currentIndex == 0 && vm.isIntroActive {
+                vm.startIntro()
+            }
         }
     }
 
-    /// Progress fraction (0 → 1)
     private var progress: CGFloat {
-        guard vm.timeRemaining > 0 else { return 0 }
-        return CGFloat(vm.timeRemaining) / 40.0
+        guard vm.poseDuration > 0 else { return 0 }
+        return CGFloat(vm.timeRemaining) / CGFloat(vm.poseDuration)
     }
 }
 
-/// Reusable circular button
 struct CircleButton: View {
     var icon: String
     var size: CGFloat = 60
