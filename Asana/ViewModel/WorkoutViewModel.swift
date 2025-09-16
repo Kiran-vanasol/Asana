@@ -19,9 +19,13 @@ class WorkoutViewModel: ObservableObject {
     @Published var introCountdown: Int = 5
     @Published var isPaused: Bool = false
 
-    //  Popup state
+    // Popup states
     @Published var showUpNext: Bool = false
     @Published var upNextPose: APIPose? = nil
+
+    // New popup state for per-pose 5s intro
+    @Published var isPoseIntroActive: Bool = false
+    @Published var poseIntroCountdown: Int = 5
 
     private var introCancellable: AnyCancellable?
     private var workoutCancellable: AnyCancellable?
@@ -38,7 +42,7 @@ class WorkoutViewModel: ObservableObject {
         isIntroActive = true
         introCancellable?.cancel()
 
-        // Play the correct "Lets Start" audio depending on workout type
+        // Play correct "Let's Start" audio
         playIntroSound(for: workoutType)
 
         introCancellable = Timer.publish(every: 1, on: .main, in: .common)
@@ -60,11 +64,12 @@ class WorkoutViewModel: ObservableObject {
     func startWorkout() {
         guard !poses.isEmpty else { return }
         currentIndex = 0
-        poseDuration = 45
+        poseDuration = 40
         timeRemaining = poseDuration
         isWorkoutFinished = false
         isPaused = false
 
+        // Play first pose audio directly
         playCurrentPoseAudio()
         startTimer()
     }
@@ -82,7 +87,7 @@ class WorkoutViewModel: ObservableObject {
                     self.timeRemaining -= 1
 
                     if self.timeRemaining == 3 {
-                        //  beep_asana  in Audio/Common
+                        // Play beep at 3s mark
                         AudioManager.shared.playSound(folder: "Audio/Common", fileName: "beep_asana")
 
                         let nextPose = self.currentIndex + 1 < self.poses.count ? self.poses[self.currentIndex + 1] : nil
@@ -104,9 +109,18 @@ class WorkoutViewModel: ObservableObject {
             currentIndex += 1
             poseDuration = 40
             timeRemaining = poseDuration
-            playCurrentPoseAudio()
+            startPoseIntro(for: currentIndex) //  show 5s popup before starting
         } else {
             finishWorkout()
+        }
+    }
+
+    func goBackPose() {
+        if currentIndex > 0 {
+            currentIndex -= 1
+            poseDuration = 40
+            timeRemaining = poseDuration
+            startPoseIntro(for: currentIndex) // also show 5s popup
         }
     }
 
@@ -119,14 +133,6 @@ class WorkoutViewModel: ObservableObject {
     private func playCurrentPoseAudio() {
         let poseName = poses[currentIndex].name
         AudioManager.shared.playSound(folder: "Audio/\(workoutType)", fileName: poseName)
-    }
-    func goBackPose() {
-        if currentIndex > 0 {
-            currentIndex -= 1
-            poseDuration = 40
-            timeRemaining = poseDuration
-            playCurrentPoseAudio()
-        }
     }
 
     private func playIntroSound(for workoutType: String) {
@@ -147,6 +153,28 @@ class WorkoutViewModel: ObservableObject {
             self.showUpNext = false
         }
     }
+
+    // MARK: - Pose Intro (5s popup)
+    func startPoseIntro(for index: Int) {
+        guard index >= 0, index < poses.count else { return }
+        isPoseIntroActive = true
+        poseIntroCountdown = 5
+        introCancellable?.cancel()
+
+        // Play audio for this pose
+        AudioManager.shared.playSound(folder: "Audio/\(workoutType)", fileName: poses[index].name)
+
+        introCancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                if self.poseIntroCountdown > 1 {
+                    self.poseIntroCountdown -= 1
+                } else {
+                    self.isPoseIntroActive = false
+                    self.introCancellable?.cancel()
+                    self.startTimer() // start timer after popup
+                }
+            }
+    }
 }
-
-

@@ -1,14 +1,14 @@
 //
-//  PostureView.swift
+//  InnerEchoesView.swift
 //  Asana
 //
-//  Created by Kiran T C on 08/09/25.
+//  Created by Kiran T C on 16/09/25.
 //
 
 import SwiftUI
 
-struct PostureView: View {
-    var title = "Yoga for Posture Reset"
+struct InnerEchoesView: View {
+    var title = "Inner Echoes"
     @StateObject private var viewModel = BackPainViewModel()
     @Environment(\.dismiss) private var dismiss
   
@@ -29,7 +29,7 @@ struct PostureView: View {
                 
                 Spacer()
                 
-                Text("Posture Reset")
+                Text("Inner Echoes")
                     .font(.system(size: 28, weight: .bold, design: .serif))
                     .foregroundColor(Color(hex: "#EB784E"))
                 
@@ -90,7 +90,7 @@ struct PostureView: View {
 
             NavigationLink {
                            // create a WorkoutViewModel and hand it to the intro view
-                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses, workoutType: "PostureReset"))
+                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses, workoutType: "InnerEchoes"))
         } label:{
                 Text("Let’s Start")
                     .font(.system(size: 18, weight: .semibold))
@@ -107,7 +107,7 @@ struct PostureView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .task {
-            await viewModel.fetchPoses(for: "PostureReset")
+            await viewModel.fetchPoses(for: "InnerEchoes")
         }
     
     }

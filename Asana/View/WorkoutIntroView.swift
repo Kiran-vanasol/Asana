@@ -41,12 +41,12 @@ struct WorkoutIntroView: View {
             WorkoutPlayerView(vm: vm)
         }
         .onAppear {
-            print("DEBUG: WorkoutIntroView appeared")
+            // Start the intro countdown once when this view appears
             vm.startIntro()
         }
         .onChange(of: vm.isIntroActive) { active in
-            print("DEBUG: isIntroActive changed -> \(active)")
             if !active {
+                // When intro finishes, navigate to WorkoutPlayerView
                 DispatchQueue.main.async {
                     goToPlayer = true
                 }

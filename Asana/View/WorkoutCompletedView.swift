@@ -10,7 +10,7 @@ import SwiftUI
 struct WorkoutCompletedView: View {
     var body: some View {
         VStack(spacing: 20) {
-            Text("🎉 Workout Completed!")
+            Text(" Workout Completed!")
                 .font(.largeTitle)
                 .bold()
                 .foregroundColor(.green)

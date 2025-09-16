@@ -43,7 +43,7 @@ struct HomeView: View {
                         }
                         .padding(.horizontal)
                     }
-                    
+                    Spacer()
                     // Meditate Section
                     Text("Meditate")
                         .font(.system(size: 34, weight: .bold))
@@ -54,18 +54,13 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 14) {
                             ForEach(["EarthMelody", "InnerEchoes", "WavesOfBliss"], id: \.self) { img in
-                                Image(img)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 240, height: 260)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    .shadow(color: Color.black.opacity(0.1), radius: 3, x: 1, y: 2)
+                                AsanaNavigationLinks(img: img)
                             }
                         }
                         .padding(.horizontal)
                     }
                     
-                    Spacer()
+                   
                 }
             }
             .navigationBarBackButtonHidden(true)

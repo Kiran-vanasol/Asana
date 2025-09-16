@@ -13,27 +13,34 @@ class AudioManager {
 
     private init() {}
 
-    /// Play audio from blue folder references
+    /// Play audio from bundle folder references
     func playSound(folder: String, fileName: String, ext: String = "mp3") {
-        // remove the extra "Audio/"
+        // folder should be like "Audio/BackPain" or "Audio/Common"
         let path = "\(folder)/\(fileName)"
         
+        print("Looking for: \(path).\(ext)")
+
         guard let url = Bundle.main.url(forResource: path, withExtension: ext) else {
-            print("Audio file not found: \(path).\(ext)")
+            print("Audio file not found in bundle: \(path).\(ext)")
             return
         }
 
         do {
+            // Keep strong reference to player
             player = try AVAudioPlayer(contentsOf: url)
             player?.prepareToPlay()
             player?.play()
-            print("Playing sound: \(path).\(ext)")
+            print("Now playing: \(path).\(ext)")
         } catch {
             print(" Error playing sound \(path): \(error.localizedDescription)")
         }
     }
 
+    /// Stop any currently playing audio
     func stop() {
-        player?.stop()
+        if player?.isPlaying == true {
+            player?.stop()
+            print("Audio stopped")
+        }
     }
 }

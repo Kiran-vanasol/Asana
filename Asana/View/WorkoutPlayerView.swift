@@ -20,7 +20,7 @@ struct WorkoutPlayerView: View {
                 // Back button
                 HStack {
                     Button(action: {
-                        vm.finishWorkout() // stop timers + cleanup
+                        vm.finishWorkout()
                         dismiss()
                     }) {
                         Image(systemName: "chevron.left")
@@ -33,21 +33,11 @@ struct WorkoutPlayerView: View {
 
                 Spacer()
 
-                // Intro countdown
-                if vm.isIntroActive {
-                    VStack(spacing: 20) {
-                        Text("Get Ready")
-                            .font(.title)
-                            .fontWeight(.semibold)
-                        Text("\(vm.introCountdown)")
-                            .font(.system(size: 60, weight: .bold, design: .rounded))
-                    }
-                }
-                // Workout content
-                else if vm.currentIndex < vm.poses.count {
+                if vm.currentIndex < vm.poses.count {
                     let pose = vm.poses[vm.currentIndex]
 
                     ZStack {
+                        // Circular progress
                         Circle()
                             .stroke(Color.gray.opacity(0.3), lineWidth: 6)
 
@@ -58,6 +48,7 @@ struct WorkoutPlayerView: View {
                             .rotationEffect(.degrees(-90))
                             .animation(.linear(duration: 1), value: vm.timeRemaining)
 
+                        // Pose image
                         if let localImage = UIImage(named: pose.name) {
                             Image(uiImage: localImage)
                                 .resizable()
@@ -74,9 +65,31 @@ struct WorkoutPlayerView: View {
                                 ProgressView()
                             }
                         }
+
+                        //  Overlay 5s popup
+                        if vm.isPoseIntroActive {
+                            VStack(spacing: 12) {
+                                Text("Get Ready for")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                                Text(pose.name)
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                Text("\(vm.poseIntroCountdown)")
+                                    .font(.system(size: 48, weight: .bold))
+                                    .foregroundColor(.orange)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(16)
+                            .shadow(radius: 6)
+                            .transition(.opacity)
+                        }
                     }
                     .frame(width: 350, height: 350)
 
+                    // Pose name
                     HStack(spacing: 6) {
                         Text(pose.name)
                             .font(.title2)
@@ -85,15 +98,17 @@ struct WorkoutPlayerView: View {
                             .foregroundColor(.gray)
                     }
 
-                    Text("\(vm.timeRemaining)")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                    // Timer
+                    if !vm.isPoseIntroActive {
+                        Text("\(vm.timeRemaining)")
+                            .font(.system(size: 44, weight: .bold, design: .rounded))
+                    }
 
+                    // Controls
                     HStack(spacing: 60) {
                         CircleButton(icon: "backward.fill") {
                             vm.goBackPose()
-                            
                         }
-
                         Button(action: { vm.togglePauseResume() }) {
                             Image(systemName: vm.isPaused ? "play.fill" : "pause.fill")
                                 .font(.system(size: 36))
@@ -101,7 +116,6 @@ struct WorkoutPlayerView: View {
                                 .frame(width: 70, height: 70)
                                 .background(Circle().fill(Color(hex: "#EB784E") ?? .orange))
                         }
-
                         CircleButton(icon: "forward.fill") {
                             vm.advancePose()
                         }
