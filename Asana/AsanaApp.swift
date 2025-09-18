@@ -51,11 +51,18 @@ struct AsanaApp: App {
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) var macDelegate
     #endif
 
+    @StateObject private var authService = AuthService.shared
+
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                WelcomeView()
+                if authService.user != nil {
+                    HomeView() //  already logged in
+                } else {
+                    WelcomeView() // first-time or logged-out users
+                }
             }
+            .environmentObject(authService)
         }
     }
 }

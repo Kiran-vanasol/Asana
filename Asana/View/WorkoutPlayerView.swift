@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WorkoutPlayerView: View {
     @ObservedObject var vm: WorkoutViewModel
-    @Environment(\.dismiss) private var dismiss
     @State private var goToCompleted = false
 
     var body: some View {
@@ -17,19 +16,7 @@ struct WorkoutPlayerView: View {
             Color(.systemGray6).ignoresSafeArea()
 
             VStack(spacing: 40) {
-                // Back button
-                HStack {
-                    Button(action: {
-                        vm.finishWorkout()
-                        dismiss()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .font(.title2)
-                            .foregroundColor(.black)
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal)
+                // (Removed custom back HStack here — we use system back button)
 
                 Spacer()
 
@@ -170,7 +157,33 @@ struct WorkoutPlayerView: View {
                 .animation(.easeInOut, value: vm.showUpNext)
             }
         }
-        .navigationBarBackButtonHidden(true)
+        // ← Use native system nav bar & back button
+        .navigationTitle(vm.workoutType)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            // center title styled like other screens
+            ToolbarItem(placement: .principal) {
+                Text(vm.workoutType)
+                    .font(.system(size: 24, weight: .bold, design: .serif))
+                    .foregroundColor(Color(hex: "#EB784E"))
+            }
+            // optional trailing menu (if you want one)
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    // menu action
+                } label: {
+                    Image(systemName: "line.horizontal.3")
+                        .foregroundColor(Color(hex: "#171717"))
+                }
+            }
+        }
+        // If user leaves the view before finishing, finish the workout
+        .onDisappear {
+            // Only end workout if it wasn't already finished (avoids double-complete)
+            if !vm.isWorkoutFinished {
+                vm.finishWorkout()
+            }
+        }
         .navigationDestination(isPresented: $goToCompleted) {
             WorkoutCompletedView()
         }
@@ -190,6 +203,7 @@ struct WorkoutPlayerView: View {
     }
 }
 
+// CircleButton unchanged
 struct CircleButton: View {
     var icon: String
     var size: CGFloat = 60

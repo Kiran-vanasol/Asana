@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
+    @ObservedObject private var authService = AuthService.shared
+    @State private var navigateToHome = false
 
     var body: some View {
         NavigationStack {
@@ -21,23 +24,17 @@ struct LoginView: View {
                     .foregroundColor(Color(hex: "#EB784E"))
                     .padding(.top, 40)
                 
-//                // Subtitle
-//                Text("Come On In.")
-//                    .font(.title2)
-//                    .fontWeight(.semibold)
-//                    .padding(.top, 10)
-//                
-//                Spacer().frame(height: 20)
+                Spacer().frame(height: 20)
                 
                 // Email
                 VStack(alignment: .leading, spacing: 8) {
-                    // Subtitle
                     Text("Come On In.")
                         .font(.title)
                         .fontWeight(.semibold)
                         .padding(.top, 10)
                     
                     Spacer().frame(height: 20)
+                    
                     TextField("Email address", text: $viewModel.email)
                         #if os(iOS)
                         .textInputAutocapitalization(.none)
@@ -57,9 +54,9 @@ struct LoginView: View {
                         } else {
                             SecureField("Password (8 characters min)", text: $viewModel.password)
                         }
-                        Button(action: {
+                        Button {
                             viewModel.isPasswordVisible.toggle()
-                        }) {
+                        } label: {
                             Image(systemName: viewModel.isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                 .foregroundColor(.gray)
                         }
@@ -72,21 +69,19 @@ struct LoginView: View {
                 // Forgot Password
                 HStack {
                     Spacer()
-                    Button(action: {
-                        // TODO: implement Forgot Password
-                    }) {
-                        Text("Forgot Password?")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                    Button("Forgot Password?") {
+                        // TODO
                     }
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 4)
                 
                 // Login Button
-                Button(action: {
+                Button {
                     viewModel.loginWithEmail()
-                }) {
+                } label: {
                     Text("Login")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -113,11 +108,11 @@ struct LoginView: View {
                     .padding(.vertical, 8)
                 
                 // Google Button
-                Button(action: {
+                Button {
                     viewModel.loginWithGoogle()
-                }) {
+                } label: {
                     HStack {
-                        Image(systemName: "globe") // Replace with real Google logo
+                        Image(systemName: "globe")
                             .foregroundColor(.red)
                         Text("Sign In with Google")
                             .foregroundColor(.black)
@@ -131,9 +126,9 @@ struct LoginView: View {
                 .padding(.horizontal, 30)
                 
                 // Apple Button
-                Button(action: {
-                    // TODO: implement Apple sign in
-                }) {
+                Button {
+                    // TODO
+                } label: {
                     HStack {
                         Image(systemName: "applelogo")
                             .foregroundColor(.black)
@@ -157,9 +152,6 @@ struct LoginView: View {
                 .padding(.top, 10)
                 
                 Spacer()
-                
-                // Navigate to HomeView when login succeeds
-                .navigationDestination(isPresented: $viewModel.isLoggedIn) { HomeView() }
             }
             .padding(.top, 30)
             .background(
@@ -172,6 +164,13 @@ struct LoginView: View {
                 }
                 .ignoresSafeArea()
             )
+            // 👇 Listen to AuthService instead of isLoggedIn
+            .onChange(of: authService.user) { user in
+                navigateToHome = (user != nil)
+            }
+            .navigationDestination(isPresented: $navigateToHome) {
+                HomeView()
+            }
         }
     }
 }
@@ -179,3 +178,4 @@ struct LoginView: View {
 #Preview {
     LoginView()
 }
+

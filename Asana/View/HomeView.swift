@@ -24,7 +24,7 @@ struct HomeView: View {
                             .foregroundColor(Color(hex: "#171717"))
                         Spacer()
                         
-                        // Profile Image (right aligned)
+                        // Profile Image
                         NavigationLink(destination: ProfileView()) {
                             ProfileImageView()
                         }
@@ -32,7 +32,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top, 8)
-
+                    
                     
                     // Āsanas Section
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -43,13 +43,13 @@ struct HomeView: View {
                         }
                         .padding(.horizontal)
                     }
-                    Spacer()
+                  
                     // Meditate Section
                     Text("Meditate")
                         .font(.system(size: 34, weight: .bold))
                         .foregroundColor(Color(hex: "#171717"))
                         .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.top, 10)
+                        .padding(.top, 15)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 14) {
@@ -62,6 +62,7 @@ struct HomeView: View {
                     
                    
                 }
+                .padding(.top, -60)
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)

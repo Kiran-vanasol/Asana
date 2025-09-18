@@ -15,7 +15,6 @@ class LoginViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isPasswordVisible: Bool = false
     @Published var errorMessage: String?
-    @Published var isLoggedIn: Bool = false
 
     // MARK: - Firebase Email/Password Login
     func loginWithEmail() {
@@ -23,10 +22,10 @@ class LoginViewModel: ObservableObject {
             DispatchQueue.main.async {
                 if let error = error {
                     self.errorMessage = error.localizedDescription
-                } else {
-                    print("Logged in as \(result?.user.email ?? "unknown")")
+                } else if let user = result?.user {
+                    print("Logged in as \(user.email ?? "unknown")")
                     self.errorMessage = nil
-                    self.isLoggedIn = true
+                    AuthService.shared.user = user   //  notify AuthService
                 }
             }
         }
@@ -37,7 +36,6 @@ class LoginViewModel: ObservableObject {
         guard (FirebaseApp.app()?.options.clientID) != nil else { return }
 
         #if os(iOS)
-        // --- iOS flow ---
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let rootViewController = windowScene.windows.first?.rootViewController else {
             return
@@ -48,7 +46,6 @@ class LoginViewModel: ObservableObject {
         }
         
         #elseif os(macOS)
-        // --- macOS flow ---
         if let window = NSApplication.shared.windows.first {
             GIDSignIn.sharedInstance.signIn(withPresenting: window) { signInResult, error in
                 self.handleGoogleResult(signInResult, error: error)
@@ -57,7 +54,7 @@ class LoginViewModel: ObservableObject {
         #endif
     }
     
-    // MARK: - Common handler
+    // MARK: - Common handler for Google
     private func handleGoogleResult(_ signInResult: GIDSignInResult?, error: Error?) {
         if let error = error {
             DispatchQueue.main.async {
@@ -83,10 +80,10 @@ class LoginViewModel: ObservableObject {
             DispatchQueue.main.async {
                 if let error = error {
                     self.errorMessage = error.localizedDescription
-                } else {
-                    print("Google login success: \(authResult?.user.email ?? "unknown")")
+                } else if let user = authResult?.user {
+                    print("Google login success: \(user.email ?? "unknown")")
                     self.errorMessage = nil
-                    self.isLoggedIn = true
+                    AuthService.shared.user = user   //  notify AuthService
                 }
             }
         }

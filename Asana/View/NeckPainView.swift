@@ -10,42 +10,9 @@ import SwiftUI
 struct NeckPainView: View {
     var title = "Yoga for Neck Pain"
     @StateObject private var viewModel = BackPainViewModel()
-    @Environment(\.dismiss) private var dismiss
-//    @State private var startWorkout = false
-
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            HStack {
-                Button(action: {
-                    
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.backward")
-                        .font(.title2)
-                        .foregroundColor(Color(hex: "#171717"))
-                }
-                
-                Spacer()
-                
-                Text("Neck Pain")
-                    .font(.system(size: 28, weight: .bold, design: .serif))
-                    .foregroundColor(Color(hex: "#EB784E"))
-                
-                Spacer()
-                
-                Button(action: {
-                    // TODO: Menu action
-                }) {
-                    Image(systemName: "line.horizontal.3")
-                        .font(.title2)
-                        .foregroundColor(Color(hex: "#171717"))
-                }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 12)
-            // Poses List
             if viewModel.isLoading {
                 Spacer()
                 ProgressView("Loading poses...")
@@ -78,9 +45,6 @@ struct NeckPainView: View {
                                 Spacer()
                             }
                             .padding(.horizontal)
-                            .onAppear {
-                                print("Loading Pose: \(pose.name), URL: \(pose.imageURL)")
-                            }
                         }
                     }
                     .padding(.top, 8)
@@ -88,10 +52,15 @@ struct NeckPainView: View {
                 }
             }
 
+            // Start Button
             NavigationLink {
-                           // create a WorkoutViewModel and hand it to the intro view
-                           WorkoutIntroView(vm: WorkoutViewModel(poses: viewModel.poses,  workoutType: "NeckPain"))
-        } label:{
+                WorkoutIntroView(
+                    vm: WorkoutViewModel(
+                        poses: viewModel.poses,
+                        workoutType: "NeckPain"
+                    )
+                )
+            } label: {
                 Text("Let’s Start")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
@@ -104,11 +73,29 @@ struct NeckPainView: View {
             .padding(.bottom, 12)
         }
         .background(Color(hex: "#EAF2F2").ignoresSafeArea())
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            // Centered bold orange title like the 2nd screenshot
+            ToolbarItem(placement: .principal) {
+                Text("Neck Pain")
+                    .font(.system(size: 24, weight: .bold, design: .serif))
+                    .foregroundColor(Color(hex: "#EB784E"))
+            }
+
+            // Optional menu button on the right
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    // add menu action here
+                } label: {
+                    Image(systemName: "line.horizontal.3")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.black)
+                }
+            }
+        }
         .task {
             await viewModel.fetchPoses(for: "NeckPain")
         }
-      
     }
 }
+
