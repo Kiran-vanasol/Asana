@@ -16,7 +16,7 @@ class AudioManager {
     /// Play audio from bundle folder references
     func playSound(folder: String, fileName: String, ext: String = "mp3") {
         // folder should be like "Audio/BackPain" or "Audio/Common"
-        let path = "\(folder)/\(fileName)"
+        let path = "fileName"
         
         print("Looking for: \(path).\(ext)")
 
