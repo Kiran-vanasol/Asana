@@ -15,10 +15,52 @@ struct WorkoutPlayerView: View {
         ZStack {
             Color(.systemGray6).ignoresSafeArea()
 
-            VStack(spacing: 40) {
+            VStack(spacing: 20) {
                 // (Removed custom back HStack here — we use system back button)
+                if vm.isPoseIntroActive, vm.currentIndex < vm.poses.count {
+                        let pose = vm.poses[vm.currentIndex]
+                        HStack(spacing: 16) {
+                            if let localImage = UIImage(named: pose.name) {
+                                Image(uiImage: localImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } else {
+                                AsyncImage(url: URL(string: pose.imageURL)) { img in
+                                    img.resizable()
+                                        .scaledToFill()
+                                        .frame(width: 60, height: 60)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                            }
 
-                Spacer()
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Get Ready")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                                Text(pose.name)
+                                    .font(.headline)
+                                Text("\(vm.poseIntroCountdown)")
+                                    .font(.headline)
+                                    .foregroundColor(.orange)
+                            }
+
+                            Spacer()
+                        }
+                        .padding()
+                        .background(.white)
+                        .cornerRadius(16)
+                        .shadow(radius: 4)
+                        .padding(.horizontal, 20)
+                    }
+                
+                
+
+
+//                Spacer()
 
                 if vm.currentIndex < vm.poses.count {
                     let pose = vm.poses[vm.currentIndex]
@@ -27,14 +69,14 @@ struct WorkoutPlayerView: View {
                         // Circular progress
                         Circle()
                             .stroke(Color.gray.opacity(0.3), lineWidth: 6)
-
-                        Circle()
-                            .trim(from: 0, to: progress)
-                            .stroke(Color(hex: "#EB784E") ?? .orange,
-                                    style: StrokeStyle(lineWidth: 6, lineCap: .round))
-                            .rotationEffect(.degrees(-90))
-                            .animation(.linear(duration: 1), value: vm.timeRemaining)
-
+                        if !vm.isPoseIntroActive {
+                            Circle()
+                                .trim(from: 0, to: progress)
+                                .stroke(Color(hex: "#EB784E") ?? .orange,
+                                        style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                                .animation(.linear(duration: 1), value: vm.timeRemaining)
+                        }
                         // Pose image
                         if let localImage = UIImage(named: pose.name) {
                             Image(uiImage: localImage)
@@ -51,27 +93,6 @@ struct WorkoutPlayerView: View {
                             } placeholder: {
                                 ProgressView()
                             }
-                        }
-
-                        //  Overlay 5s popup
-                        if vm.isPoseIntroActive {
-                            VStack(spacing: 12) {
-                                Text("Get Ready for")
-                                    .font(.headline)
-                                    .foregroundColor(.gray)
-                                Text(pose.name)
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                Text("\(vm.poseIntroCountdown)")
-                                    .font(.system(size: 48, weight: .bold))
-                                    .foregroundColor(.orange)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(16)
-                            .shadow(radius: 6)
-                            .transition(.opacity)
                         }
                     }
                     .frame(width: 350, height: 350)
@@ -163,7 +184,7 @@ struct WorkoutPlayerView: View {
         .toolbar {
             // center title styled like other screens
             ToolbarItem(placement: .principal) {
-                Text(vm.workoutType)
+                Text("")
                     .font(.system(size: 24, weight: .bold, design: .serif))
                     .foregroundColor(Color(hex: "#EB784E"))
             }
