@@ -27,7 +27,7 @@ struct PostureView: View {
                     VStack(spacing: 20) {
                         ForEach(viewModel.poses) { pose in
                             HStack(spacing: 16) {
-                                AsyncImage(url: URL(string: pose.imageURL)) { image in
+                                CachedAsyncImage(url: URL(string: pose.imageURL)) { image in
                                     image
                                         .resizable()
                                         .scaledToFit()

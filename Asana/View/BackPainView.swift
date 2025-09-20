@@ -27,15 +27,24 @@ struct BackPainView: View {
                     VStack(spacing: 20) {
                         ForEach(viewModel.poses) { pose in
                             HStack(spacing: 16) {
-                                AsyncImage(url: URL(string: pose.imageURL)) { image in
-                                    image
+                                if let url = URL(string: pose.imageURL) {
+                                    CachedAsyncImage(url: url) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 60, height: 60)
+                                            .clipShape(Circle())
+                                    } placeholder: {
+                                        ProgressView()
+                                            .frame(width: 60, height: 60)
+                                    }
+                                } else {
+                                    Image(systemName: "photo")
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 60, height: 60)
                                         .clipShape(Circle())
-                                } placeholder: {
-                                    ProgressView()
-                                        .frame(width: 60, height: 60)
+                                        .foregroundColor(.gray)
                                 }
 
                                 Text(pose.name)
