@@ -10,6 +10,12 @@ import SwiftUI
 struct WorkoutPlayerView: View {
     @ObservedObject var vm: WorkoutViewModel
     @State private var goToCompleted = false
+    @StateObject private var streakVM: StreakViewModel
+    
+    init(vm: WorkoutViewModel) {
+        self.vm = vm
+        _streakVM = StateObject(wrappedValue: StreakViewModel(workoutId: vm.workoutId))
+    }
 
     var body: some View {
         ZStack {
@@ -206,7 +212,7 @@ struct WorkoutPlayerView: View {
             }
         }
         .navigationDestination(isPresented: $goToCompleted) {
-            WorkoutCompletedView()
+            WorkoutCompletedView(streakVM: streakVM)
         }
         .onChange(of: vm.isWorkoutFinished) { finished in
             if finished { goToCompleted = true }

@@ -57,7 +57,8 @@ struct InnerEchoesView: View {
                 WorkoutIntroView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
-                        workoutType: "InnerEchoes"
+                        workoutType: "InnerEchoes",
+                        workoutId: "innerechoes01"
                     )
                 )
             } label: {

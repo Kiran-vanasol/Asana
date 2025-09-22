@@ -66,7 +66,8 @@ struct BackPainView: View {
                 WorkoutIntroView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
-                        workoutType: "BackPain"
+                        workoutType: "BackPain",
+                        workoutId: "BackPain01"
                     )
                 )
             } label: {

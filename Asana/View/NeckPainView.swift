@@ -57,7 +57,8 @@ struct NeckPainView: View {
                 WorkoutIntroView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
-                        workoutType: "NeckPain"
+                        workoutType: "NeckPain",
+                        workoutId: "NeckPain01"
                     )
                 )
             } label: {

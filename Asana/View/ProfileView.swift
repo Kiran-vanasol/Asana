@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileView: View {
     @StateObject private var vm = ProfileViewModel()
     @Environment(\.dismiss) private var dismiss
+    @State private var showStreaks = false ///   to show streaksss
 
     var body: some View {
         VStack(spacing: 24) {
@@ -64,24 +65,28 @@ struct ProfileView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color(hex: "#F17228")) // orange from Figma
+                .background(Color(hex: "#F17228"))
                 .cornerRadius(12)
                 .padding(.horizontal)
             }
 
-            // Settings Section
+        
             SectionView(title: "SETTINGS", items: [
                 "Manage Account", "Current Streak", "Reminders"
-            ])
+            ]){ tapped in
+                if tapped == "Current Streak" {
+                    showStreaks = true
+                }
+            }
 
-            // Support Section
+            
             SectionView(title: "SUPPORT", items: [
                 "Frequently Asked Questions", "Contact Support", "Privacy Policy"
             ])
 
             Spacer()
 
-            // Sign Out (Text only)
+            
             Button(action: { vm.signOut() }) {
                 Text("Sign Out")
                     .font(.system(size: 16, weight: .medium))
@@ -92,6 +97,10 @@ struct ProfileView: View {
         }
         .navigationBarHidden(true)
         .background(Color(hex: "#F8F8F8").ignoresSafeArea())
+        
+        .sheet(isPresented: $showStreaks) {
+                    AllStreaksCalendarView()   
+                }
     }
 }
 
@@ -99,6 +108,7 @@ struct ProfileView: View {
 struct SectionView: View {
     var title: String
     var items: [String]
+    var onItemTap: ((String) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -109,7 +119,7 @@ struct SectionView: View {
                 .padding(.horizontal)
 
             ForEach(items, id: \.self) { item in
-                Button(action: { print("\(item) tapped") }) {
+                Button(action: { onItemTap?(item) }) {
                     Text(item)
                         .font(.system(size: 16))
                         .foregroundColor(.black)

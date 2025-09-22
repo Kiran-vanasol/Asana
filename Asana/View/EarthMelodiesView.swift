@@ -57,7 +57,8 @@ struct EarthMelodiesView: View {
                 WorkoutIntroView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
-                        workoutType: "EarthMelodies"
+                        workoutType: "EarthMelodies",
+                        workoutId: "earthMelodies01"
                     )
                 )
             } label: {

@@ -57,7 +57,8 @@ struct PostureView: View {
                 WorkoutIntroView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
-                        workoutType: "PostureReset"
+                        workoutType: "PostureReset",
+                        workoutId: "postureReset01"
                     )
                 )
             } label: {
