@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// A small SwiftUI wrapper that uses ImageLoader and ImageCache.
-/// Usage: CachedAsyncImage(url: URL(...)) { image in ... } placeholder: { ... }
+/// CachedAsyncImage(url: URL(...)) { image in ... } placeholder: { ... }
 struct CachedAsyncImage<Content: View, Placeholder: View>: View {
     @StateObject private var loader = ImageLoader()
     private let url: URL?
