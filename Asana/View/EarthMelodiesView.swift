@@ -54,11 +54,11 @@ struct EarthMelodiesView: View {
 
             // Start Button
             NavigationLink {
-                WorkoutIntroView(
-                    vm: WorkoutViewModel(
+                MusicPlayerView(
+                    vm: MusicPlayerViewModel(
                         poses: viewModel.poses,
                         workoutType: "EarthMelodies",
-                        workoutId: "earthMelodies01"
+                        sessionId: "earthMelodies01"
                     )
                 )
             } label: {

@@ -1,14 +1,14 @@
 //
-//  InnerEchoesView.swift
+//  WavesOfBlissView.swift
 //  Asana
 //
-//  Created by Kiran T C on 16/09/25.
+//  Created by Kiran T C on 23/09/25.
 //
 
 import SwiftUI
 
-struct InnerEchoesView: View {
-    var title = "Inner Echoes"
+struct WavesOfBlissView: View {
+    var title = "Waves Of Bliss"
     @StateObject private var viewModel = BackPainViewModel()
 
     var body: some View {
@@ -78,7 +78,7 @@ struct InnerEchoesView: View {
         .toolbar {
             // Centered bold orange title like the 2nd screenshot
             ToolbarItem(placement: .principal) {
-                Text("Inner Echoes")
+                Text("\(title)")
                     .font(.system(size: 24, weight: .bold, design: .serif))
                     .foregroundColor(Color(hex: "#EB784E"))
             }
@@ -95,7 +95,7 @@ struct InnerEchoesView: View {
             }
         }
         .task {
-            await viewModel.fetchPoses(for: "InnerEchoes")
+            await viewModel.fetchPoses(for: "WavesOfBliss")
         }
     }
 }

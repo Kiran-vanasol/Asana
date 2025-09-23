@@ -62,7 +62,7 @@ struct AsanaNavigationLinks: View {
             }
             
         case "WavesOfBliss":
-            NavigationLink(destination: Text("Comming soon"))  {
+            NavigationLink(destination: WavesOfBlissView())  {
                 Image(img)
                     .resizable()
                     .scaledToFill()

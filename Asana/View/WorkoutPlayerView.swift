@@ -22,7 +22,7 @@ struct WorkoutPlayerView: View {
             Color(.systemGray6).ignoresSafeArea()
 
             VStack(spacing: 20) {
-                // (Removed custom back HStack here — we use system back button)
+              
                 if vm.isPoseIntroActive, vm.currentIndex < vm.poses.count {
                         let pose = vm.poses[vm.currentIndex]
                         HStack(spacing: 16) {
