@@ -8,9 +8,15 @@
 import Foundation
 
 // MARK: - Model
-struct Pose: Identifiable {
-    let id = UUID()
+struct HomeResponse: Codable {
+    let asanas: [AsanaItem]
+    let meditate: [AsanaItem]
+}
+
+struct AsanaItem: Codable, Identifiable {
+    var id: String { name }   // for ForEach
     let name: String
-    let imageName: String
+    let s3_url: String
+    let category: String
 }
 
