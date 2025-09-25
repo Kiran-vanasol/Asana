@@ -11,6 +11,8 @@ struct MusicPlayerView: View {
     @ObservedObject var vm: MusicPlayerViewModel
     @State private var goToCompleted = false
     @StateObject private var streakVM: StreakViewModel
+    @State private var showInfoSheet = false
+    @State private var selectedPoseDetail: APIPose?
     
     init(vm: MusicPlayerViewModel) {
         self.vm = vm
@@ -25,7 +27,7 @@ struct MusicPlayerView: View {
                 
                 Spacer()
                 
-                // Track Image in Circle
+                
                 if vm.currentIndex < vm.poses.count {
                     let track = vm.poses[vm.currentIndex]
                     
@@ -51,11 +53,27 @@ struct MusicPlayerView: View {
                         }
                     }
                     
-                    // Track Name
-                    Text(track.name)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .padding(.top, 16)
+                    HStack(spacing: 6) {
+                        Text(track.name)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Button {
+                          
+                               selectedPoseDetail = APIPose(
+                                   id: track.id,
+                                   name: track.name,
+                                   imageURL: track.imageURL,
+                                   category: "",
+                                   benefits: track.benefits,
+                                   caution: track.caution,
+                                   howToPrepare: track.howToPrepare
+                               )
+                               showInfoSheet = true
+                           } label: {
+                               Image(systemName: "info.circle")
+                                   .foregroundColor(.gray)
+                           }
+                    }
                 }
                 
                 // Controls
@@ -111,6 +129,14 @@ struct MusicPlayerView: View {
                 vm.play()
             }
         }
+        .sheet(isPresented: $showInfoSheet) {
+            if let pose = selectedPoseDetail {
+                PoseInfoSheet(pose: pose) { showInfoSheet = false }
+            } else {
+                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+
 
     }
 }

@@ -11,6 +11,9 @@ struct WorkoutPlayerView: View {
     @ObservedObject var vm: WorkoutViewModel
     @State private var goToCompleted = false
     @StateObject private var streakVM: StreakViewModel
+    @State private var showInfoSheet = false
+    @State private var selectedPoseDetail: APIPose?
+    
     
     init(vm: WorkoutViewModel) {
         self.vm = vm
@@ -108,8 +111,24 @@ struct WorkoutPlayerView: View {
                         Text(pose.name)
                             .font(.title2)
                             .fontWeight(.semibold)
-                        Image(systemName: "info.circle")
-                            .foregroundColor(.gray)
+                        Button {
+                               // 1. Pause timer
+                            vm.pauseWorkout()
+                               // 2. Build the detail object from the current pose
+                               selectedPoseDetail = APIPose(
+                                   id: pose.id,
+                                   name: pose.name,
+                                   imageURL: pose.imageURL,
+                                   category: "",
+                                   benefits: pose.benefits,
+                                   caution: pose.caution,
+                                   howToPrepare: pose.howToPrepare
+                               )
+                               showInfoSheet = true
+                           } label: {
+                               Image(systemName: "info.circle")
+                                   .foregroundColor(.gray)
+                           }
                     }
 
                     // Timer
@@ -184,29 +203,29 @@ struct WorkoutPlayerView: View {
                 .animation(.easeInOut, value: vm.showUpNext)
             }
         }
-        // ← Use native system nav bar & back button
+        
         .navigationTitle(vm.workoutType)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            // center title styled like other screens
+          
             ToolbarItem(placement: .principal) {
                 Text("")
                     .font(.system(size: 24, weight: .bold, design: .serif))
                     .foregroundColor(Color(hex: "#EB784E"))
             }
-            // optional trailing menu (if you want one)
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    // menu action
+                   
                 } label: {
                     Image(systemName: "line.horizontal.3")
                         .foregroundColor(Color(hex: "#171717"))
                 }
             }
         }
-        // If user leaves the view before finishing, finish the workout
+  
         .onDisappear {
-            // Only end workout if it wasn't already finished (avoids double-complete)
+            
             if !vm.isWorkoutFinished {
                 vm.finishWorkout()
             }
@@ -222,6 +241,19 @@ struct WorkoutPlayerView: View {
                 vm.startIntro()
             }
         }
+        .sheet(isPresented: $showInfoSheet) {
+            if let pose = selectedPoseDetail {
+                PoseInfoSheet(
+                    pose: pose,
+                    onDismiss: {
+                        showInfoSheet = false
+                        vm.resumeWorkout()
+                    }
+                )
+            }
+        }
+
+
     }
 
     private var progress: CGFloat {

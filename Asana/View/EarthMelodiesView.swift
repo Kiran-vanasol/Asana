@@ -10,6 +10,9 @@ import SwiftUI
 struct EarthMelodiesView: View {
     var title = "Earth Melodies"
     @StateObject private var viewModel = BackPainViewModel()
+    @State private var selectedPose: APIPose?      
+    @State private var showInfoSheet = false
+
 
     var body: some View {
         VStack(spacing: 0) {
@@ -26,27 +29,32 @@ struct EarthMelodiesView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         ForEach(viewModel.poses) { pose in
-                            HStack(spacing: 16) {
-                                CachedAsyncImage(url: URL(string: pose.imageURL)) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 60, height: 60)
-                                        .clipShape(Circle())
-                                } placeholder: {
-                                    ProgressView()
-                                        .frame(width: 60, height: 60)
+                            Button {
+                             selectedPose = pose
+                                showInfoSheet = true
+                            } label: {
+                                HStack(spacing: 16) {
+                                    CachedAsyncImage(url: URL(string: pose.imageURL)) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 60, height: 60)
+                                            .clipShape(Circle())
+                                    } placeholder: {
+                                        ProgressView()
+                                            .frame(width: 60, height: 60)
+                                    }
+                                    
+                                    Text(pose.name)
+                                        .font(.system(size: 20, weight: .semibold, design: .serif))
+                                        .foregroundColor(Color(hex: "#171717"))
+                                    
+                                    Spacer()
                                 }
-
-                                Text(pose.name)
-                                    .font(.system(size: 20, weight: .semibold, design: .serif))
-                                    .foregroundColor(Color(hex: "#171717"))
-
-                                Spacer()
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
-                        }
-                    }
+                            .buttonStyle(.plain)
+                        }                    }
                     .padding(.top, 8)
                     .padding(.bottom, 16)
                 }
@@ -96,6 +104,24 @@ struct EarthMelodiesView: View {
         }
         .task {
             await viewModel.fetchPoses(for: "EarthMelodies")
+        }
+        .sheet(isPresented: $showInfoSheet) {
+            if let pose = selectedPose {
+                PoseInfoSheet(
+                    pose: APIPose(
+                        id: pose.id,
+                        name: pose.name,
+                        imageURL: pose.imageURL,
+                        category: "EarthMelodies",
+                        benefits: pose.benefits,
+                        caution: pose.caution,
+                        howToPrepare: pose.howToPrepare
+                    ),
+                    onDismiss: {
+                        showInfoSheet = false
+                    }
+                )
+            }
         }
     }
 }

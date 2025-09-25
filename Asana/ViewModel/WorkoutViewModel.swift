@@ -18,6 +18,7 @@ class WorkoutViewModel: ObservableObject {
     @Published var isIntroActive: Bool = true
     @Published var introCountdown: Int = 5
     @Published var isPaused: Bool = false
+      private var timer: Timer?
     
     
 

@@ -10,6 +10,9 @@ import SwiftUI
 struct BackPainView: View {
     var title = "Yoga for Back Pain"
     @StateObject private var viewModel = BackPainViewModel()
+    @State private var selectedPose: APIPose?       
+    @State private var showInfoSheet = false
+
 
     var body: some View {
         VStack(spacing: 0) {
@@ -26,9 +29,12 @@ struct BackPainView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         ForEach(viewModel.poses) { pose in
-                            HStack(spacing: 16) {
-                                if let url = URL(string: pose.imageURL) {
-                                    CachedAsyncImage(url: url) { image in
+                            Button {
+                             selectedPose = pose
+                                showInfoSheet = true
+                            } label: {
+                                HStack(spacing: 16) {
+                                    CachedAsyncImage(url: URL(string: pose.imageURL)) { image in
                                         image
                                             .resizable()
                                             .scaledToFit()
@@ -38,22 +44,16 @@ struct BackPainView: View {
                                         ProgressView()
                                             .frame(width: 60, height: 60)
                                     }
-                                } else {
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 60, height: 60)
-                                        .clipShape(Circle())
-                                        .foregroundColor(.gray)
+                                    
+                                    Text(pose.name)
+                                        .font(.system(size: 20, weight: .semibold, design: .serif))
+                                        .foregroundColor(Color(hex: "#171717"))
+                                    
+                                    Spacer()
                                 }
-
-                                Text(pose.name)
-                                    .font(.system(size: 20, weight: .semibold, design: .serif))
-                                    .foregroundColor(Color(hex: "#171717"))
-
-                                Spacer()
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
+                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.top, 8)
@@ -105,6 +105,24 @@ struct BackPainView: View {
         }
         .task {
             await viewModel.fetchPoses(for: "BackPain")
+        }
+        .sheet(isPresented: $showInfoSheet) {
+            if let pose = selectedPose {
+                PoseInfoSheet(
+                    pose: APIPose(
+                        id: pose.id,
+                        name: pose.name,
+                        imageURL: pose.imageURL,
+                        category: "Back Pain",
+                        benefits: pose.benefits,
+                        caution: pose.caution,
+                        howToPrepare: pose.howToPrepare
+                    ),
+                    onDismiss: {
+                        showInfoSheet = false
+                    }
+                )
+            }
         }
     }
 }
