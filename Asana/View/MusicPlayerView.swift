@@ -131,12 +131,14 @@ struct MusicPlayerView: View {
         }
         .sheet(isPresented: $showInfoSheet) {
             if let pose = selectedPoseDetail {
-                PoseInfoSheet(pose: pose) { showInfoSheet = false }
-            } else {
-                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+                PoseInfoSheet(
+                    pose: pose,
+                    onDismiss: {
+                        showInfoSheet = false
+                    }
+                )
             }
         }
-
 
     }
 }
