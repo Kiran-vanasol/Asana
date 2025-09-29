@@ -105,24 +105,15 @@ struct PostureView: View {
         .task {
             await viewModel.fetchPoses(for: "PostureReset")
         }
-        .sheet(isPresented: $showInfoSheet) {
-            if let pose = selectedPose {
-                PoseInfoSheet(
-                    pose: APIPose(
-                        id: pose.id,
-                        name: pose.name,
-                        imageURL: pose.imageURL,
-                        category: "PostureReset",
-                        benefits: pose.benefits,
-                        caution: pose.caution,
-                        howToPrepare: pose.howToPrepare
-                    ),
-                    onDismiss: {
-                        showInfoSheet = false
-                    }
-                )
-            }
+        .sheet(item: $selectedPose) { pose in
+            PoseInfoSheet(
+                pose: pose,
+                onDismiss: {
+                    selectedPose = nil
+                }
+            )
         }
+
     }
 }
 

@@ -9,8 +9,8 @@ import SwiftUI
 
 struct EarthMelodiesView: View {
     var title = "Earth Melodies"
-    @StateObject private var viewModel = BackPainViewModel()
-    @State private var selectedPose: APIPose?      
+    @StateObject private var viewModel = MusicViewModel()
+    @State private var selectedMusic: MusicPose?
     @State private var showInfoSheet = false
 
 
@@ -30,7 +30,7 @@ struct EarthMelodiesView: View {
                     VStack(spacing: 20) {
                         ForEach(viewModel.poses) { pose in
                             Button {
-                             selectedPose = pose
+                             selectedMusic = pose
                                 showInfoSheet = true
                             } label: {
                                 HStack(spacing: 16) {
@@ -105,23 +105,14 @@ struct EarthMelodiesView: View {
         .task {
             await viewModel.fetchPoses(for: "EarthMelodies")
         }
-        .sheet(isPresented: $showInfoSheet) {
-            if let pose = selectedPose {
-                PoseInfoSheet(
-                    pose: APIPose(
-                        id: pose.id,
-                        name: pose.name,
-                        imageURL: pose.imageURL,
-                        category: "EarthMelodies",
-                        benefits: pose.benefits,
-                        caution: pose.caution,
-                        howToPrepare: pose.howToPrepare
-                    ),
-                    onDismiss: {
-                        showInfoSheet = false
-                    }
-                )
-            }
+        .sheet(item: $selectedMusic) { pose in
+            MusicInfoSheet(
+                pose: pose,
+                onDismiss: {
+                    selectedMusic = nil
+                }
+            )
         }
+
     }
 }

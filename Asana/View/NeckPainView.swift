@@ -106,24 +106,15 @@ struct NeckPainView: View {
         .task {
             await viewModel.fetchPoses(for: "NeckPain")
         }
-        .sheet(isPresented: $showInfoSheet) {
-            if let pose = selectedPose {
-                PoseInfoSheet(
-                    pose: APIPose(
-                        id: pose.id,
-                        name: pose.name,
-                        imageURL: pose.imageURL,
-                        category: "NeckPain",
-                        benefits: pose.benefits,
-                        caution: pose.caution,
-                        howToPrepare: pose.howToPrepare
-                    ),
-                    onDismiss: {
-                        showInfoSheet = false
-                    }
-                )
-            }
+        .sheet(item: $selectedPose) { pose in
+            PoseInfoSheet(
+                pose: pose,
+                onDismiss: {
+                    selectedPose = nil
+                }
+            )
         }
+
 
     }
 }

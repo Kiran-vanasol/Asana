@@ -16,6 +16,7 @@ struct APIPose: Identifiable, Codable {
     let benefits: String
     let caution: String
     let howToPrepare: String
+   
 //    let localImageName: String?
     
     // Convenience property for AsyncImage

@@ -9,8 +9,8 @@ import SwiftUI
 
 struct InnerEchoesView: View {
     var title = "Inner Echoes"
-    @StateObject private var viewModel = BackPainViewModel()
-    @State private var selectedPose: APIPose?
+    @StateObject private var viewModel = MusicViewModel()
+    @State private var selectedMusic: MusicPose?
     @State private var showInfoSheet = false
 
     var body: some View {
@@ -29,7 +29,7 @@ struct InnerEchoesView: View {
                     VStack(spacing: 20) {
                         ForEach(viewModel.poses) { pose in
                             Button {
-                             selectedPose = pose
+                             selectedMusic = pose
                                 showInfoSheet = true
                             } label: {
                                 HStack(spacing: 16) {
@@ -105,23 +105,13 @@ struct InnerEchoesView: View {
         .task {
             await viewModel.fetchPoses(for: "InnerEchoes")
         }
-        .sheet(isPresented: $showInfoSheet) {
-            if let pose = selectedPose {
-                PoseInfoSheet(
-                    pose: APIPose(
-                        id: pose.id,
-                        name: pose.name,
-                        imageURL: pose.imageURL,
-                        category: "InnerEchoes",
-                        benefits: pose.benefits,
-                        caution: pose.caution,
-                        howToPrepare: pose.howToPrepare
-                    ),
-                    onDismiss: {
-                        showInfoSheet = false
-                    }
-                )
-            }
+        .sheet(item: $selectedMusic) { pose in
+            MusicInfoSheet(
+                pose: pose,
+                onDismiss: {
+                    selectedMusic = nil
+                }
+            )
         }
     }
 }

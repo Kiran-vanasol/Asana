@@ -1,4 +1,11 @@
 //
+//  MusicInfoSheet.swift
+//  Asana
+//
+//  Created by Kiran T C on 26/09/25.
+//
+
+//
 //  PoseInfoSheet.swift
 //  Asana
 //
@@ -7,16 +14,16 @@
 
 import SwiftUI
 
-struct PoseInfoSheet: View {
-    let pose: APIPose
-    let onDismiss: () -> Void   // so we can resume timer from outside
+struct MusicInfoSheet: View {
+    let pose: MusicPose
+    let onDismiss: () -> Void   
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text(pose.name)
                     .font(.system(size: 24, weight: .bold, design: .serif))
-                    .foregroundColor(Color(hex: "#EB784E"))
+                    .foregroundColor(Color(red: 61/255, green: 122/255, blue: 85/255))
                     .frame(maxWidth: .infinity, alignment: .center)
                 ZStack {
                     // Pose Image
@@ -46,26 +53,34 @@ struct PoseInfoSheet: View {
                 
 
                 Group {
-                    
-                    Text("How to Prepare")
+                    Text("Resonates With")
                         .font(.system(size: 20, weight: .bold, design: .serif))
-                        .foregroundColor(Color(hex: "#EB784E"))
-                    Text(pose.howToPrepare)
-                        .font(.system(size: 16, weight: .regular, design: .serif))
-                        .foregroundColor(.secondary)
-                    
+                        .foregroundColor(Color(red: 61/255, green: 122/255, blue: 85/255))
 
-                    Text("Caution")
-                        .font(.system(size: 20, weight: .bold, design: .serif))
-                        .foregroundColor(Color(hex: "#EB784E"))
-                    Text(pose.caution)
+                    Text(pose.resonatesWith!)
                         .font(.system(size: 16, weight: .regular, design: .serif))
                         .foregroundColor(.secondary)
                     
-                    Text("Benefits")
+                    Text("Focus On This Sound When")
                         .font(.system(size: 20, weight: .bold, design: .serif))
-                        .foregroundColor(Color(hex: "#EB784E"))
-                    Text(pose.benefits)
+                        .foregroundColor(Color(red: 61/255, green: 122/255, blue: 85/255))
+
+                    Text(pose.focusOnThisInstrumentWhen!)
+                        .font(.system(size: 16, weight: .regular, design: .serif))
+                        .foregroundColor(.secondary)
+                    
+                    Text("Physical Body Assosiation")
+                        .font(.system(size: 20, weight: .bold, design: .serif))
+                        .foregroundColor(Color(red: 61/255, green: 122/255, blue: 85/255))
+
+                    Text(pose.physicalBodyAssociation!)
+                        .font(.system(size: 16, weight: .regular, design: .serif))
+                        .foregroundColor(.secondary)
+                    Text("Sound")
+                        .font(.system(size: 20, weight: .bold, design: .serif))
+                        .foregroundColor(Color(red: 61/255, green: 122/255, blue: 85/255))
+
+                    Text(pose.sound!)
                         .font(.system(size: 16, weight: .regular, design: .serif))
                         .foregroundColor(.secondary)
 

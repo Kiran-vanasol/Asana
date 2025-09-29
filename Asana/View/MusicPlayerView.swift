@@ -11,8 +11,8 @@ struct MusicPlayerView: View {
     @ObservedObject var vm: MusicPlayerViewModel
     @State private var goToCompleted = false
     @StateObject private var streakVM: StreakViewModel
-    @State private var showInfoSheet = false
-    @State private var selectedPoseDetail: APIPose?
+    @State private var selectedMusic: MusicPose?
+    @State private var showMusicSheet = false
     
     init(vm: MusicPlayerViewModel) {
         self.vm = vm
@@ -59,16 +59,20 @@ struct MusicPlayerView: View {
                             .fontWeight(.semibold)
                         Button {
                           
-                               selectedPoseDetail = APIPose(
-                                   id: track.id,
-                                   name: track.name,
-                                   imageURL: track.imageURL,
-                                   category: "",
-                                   benefits: track.benefits,
-                                   caution: track.caution,
-                                   howToPrepare: track.howToPrepare
-                               )
-                               showInfoSheet = true
+                            selectedMusic = MusicPose(
+                                id: track.id,
+                                category: track.category,
+                                name: track.name,
+                                imageURL: track.imageURL,
+                                benefits: track.benefits,
+                                caution: track.caution,
+                                howToPrepare: track.howToPrepare,
+                                sound: track.sound,
+                                focusOnThisInstrumentWhen: track.focusOnThisInstrumentWhen,
+                                physicalBodyAssociation: track.physicalBodyAssociation,
+                                resonatesWith: track.resonatesWith
+                            )
+                            showMusicSheet = true
                            } label: {
                                Image(systemName: "info.circle")
                                    .foregroundColor(.gray)
@@ -129,16 +133,15 @@ struct MusicPlayerView: View {
                 vm.play()
             }
         }
-        .sheet(isPresented: $showInfoSheet) {
-            if let pose = selectedPoseDetail {
-                PoseInfoSheet(
-                    pose: pose,
-                    onDismiss: {
-                        showInfoSheet = false
-                    }
-                )
-            }
+        .sheet(item: $selectedMusic) { pose in
+            MusicInfoSheet(
+                pose: pose,
+                onDismiss: {
+                    selectedMusic = nil
+                }
+            )
         }
+
 
     }
 }

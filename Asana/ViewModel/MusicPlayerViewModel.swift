@@ -11,7 +11,7 @@ import Foundation
 class MusicPlayerViewModel: ObservableObject {
     let sessionId: String
     
-    @Published var poses: [APIPose] = []
+    @Published var poses: [MusicPose] = []
     @Published var currentIndex: Int = 0
     @Published var isPlaying: Bool = false
     @Published var isFinished: Bool = false
@@ -19,7 +19,7 @@ class MusicPlayerViewModel: ObservableObject {
     
    
     
-    init(poses: [APIPose], workoutType: String = "InnerEchoes", sessionId: String) {
+    init(poses: [MusicPose], workoutType: String = "InnerEchoes", sessionId: String) {
         self.poses = poses
         self.workoutType = workoutType
         self.sessionId = sessionId
