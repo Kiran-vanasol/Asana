@@ -144,6 +144,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F46CCDB02E8132FB00887629 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F47228FE2E68468200DA89D2 /* Asana */,
@@ -309,6 +310,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F46CCDB02E8132FB00887629 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = F46CCDAF2E8132FB00887629 /* FirebaseFirestore */;
+		};
 		F472290C2E68468300DA89D2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F47228FB2E68468200DA89D2 /* Asana */;
@@ -723,6 +728,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F400C4E72E69965300708532 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		F46CCDAF2E8132FB00887629 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F400C4C82E69884100708532 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
