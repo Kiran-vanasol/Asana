@@ -114,7 +114,6 @@ struct WeekRowView: View {
             ForEach(currentWeekDates(), id: \.self) { d in
                 let iso = d.isoDateString
                 let isDone = datesSet.contains(iso)
-                let isToday = calendar.isDateInToday(d)
                 let short = String(calendar.shortWeekdaySymbols[calendar.component(.weekday, from: d) - 1].prefix(1))
                 ZStack {
                     Circle()
