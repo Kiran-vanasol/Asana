@@ -9,13 +9,18 @@ import SwiftUI
 
 struct AllStreaksCalendarView: View {
     @State private var allDates: Set<String> = []
-
+    @State private var displayedMonth = Date()
+    @State private var currentStreak: Int = 0
+    
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Streak Calendar").font(.title2).padding(.top)
-                CalendarGridView(highlightDates: allDates)
+                MonthHeaderView(displayedMonth: $displayedMonth)
+                CalendarGridView(highlightDates: allDates, month: displayedMonth)
+                StreakCardView(streakCount: currentStreak)
+
                 Spacer()
+                
             }
             .onAppear {
                 StreakService.shared.fetchAllStreaks { result in
@@ -32,10 +37,19 @@ struct AllStreaksCalendarView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Close") { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to:nil, from:nil, for:nil) }
+                ToolbarItem() {
+                    HStack(spacing: 8) {
+                        Image(systemName: "calendar")
+                            .imageScale(.large)
+                            .foregroundColor(Color(hex: "#EB784E"))
+                        Text("Check Streak")
+                            .font(.system(size: 24, weight: .bold, design: .serif))
+                            .foregroundColor(Color(hex: "#EB784E"))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
+
         }
     }
 }

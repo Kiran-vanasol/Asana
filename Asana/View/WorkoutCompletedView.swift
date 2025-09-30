@@ -10,43 +10,85 @@ import SwiftUI
 struct WorkoutCompletedView: View {
     @ObservedObject var streakVM: StreakViewModel
     @Environment(\.dismiss) var dismiss
+    @State private var rating: Int = 0
 
     var body: some View {
-        VStack(spacing: 18) {
-            Spacer().frame(height: 20)
-
-            Text("🔥")
-                .font(.system(size: 64))
-
-            Text("\(streakVM.streakCount)")
-                .font(.system(size: 46, weight: .bold, design: .rounded))
-                .foregroundColor(.primary)
-
-            Text("Day Streak!!")
-                .font(.title2)
-                .foregroundColor(Color(red: 235/255, green: 120/255, blue: 78/255))
-                .fontWeight(.semibold)
-
-            Text("You’re on fire! Keep the flame lit every day!")
-                .multilineTextAlignment(.center)
+        ScrollView {
+            VStack(spacing: 10) {
+                
+                Image("Streakasana")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 250, height: 250)
+                HStack {
+                    Text("🔥")
+                        .font(.system(size: 48))
+                    
+                    Text("\(streakVM.streakCount)")
+                        .font(.system(size: 46, weight: .bold, design: .serif))
+                        .foregroundColor(.primary)
+                }
+                
+                Text("Day Streak!!")
+                    .font(.title2)
+                    .foregroundColor(Color(red: 235/255, green: 120/255, blue: 78/255))
+                    .fontWeight(.semibold)
+                Text("One Breath At A Time")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(red: 235/255, green: 120/255, blue: 78/255))
+                Text("You’re on fire! Keep the flame lit every day!")
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 36)
+                    .foregroundColor(.secondary)
+                
+                Text("Keep the vibes high and the stress low. Come back tomorrow for another dose of peace and positivity!")
+                    .multilineTextAlignment(.center)
+                    .lineLimit(nil)
+                    .padding(.horizontal, 20)
+                    .foregroundColor(.secondary)
+                
+                
+                
+                
+                WeekRowView(datesSet: streakVM.dates)
+                
+                HStack(spacing: 8) {
+                    ForEach(1...5, id: \.self) { index in
+                        Image(systemName: index <= rating ? "star.fill" : "star")
+                            .foregroundColor(.orange)
+                            .font(.title3)
+                            .onTapGesture {
+                                rating = index
+                                print("User selected rating: \(rating)")
+                            }
+                    }
+                }
+                .padding(.top, 16)
+                
+                Spacer()
+                
+                Button("Submit Rating") {
+                    //  rating submission logic here
+                }
+                .font(.subheadline)
+                .foregroundColor(Color.orange)
+                .padding(.top, 4)
+                
+                
+                Button(action: { dismiss() }) {
+                    Text("Skip")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .font(.headline)
+                }
+                .background(Color(red: 235/255, green: 120/255, blue: 78/255))
+                .foregroundColor(.white)
+                .cornerRadius(20)
                 .padding(.horizontal, 36)
-                .foregroundColor(.secondary)
-
-            WeekRowView(datesSet: streakVM.dates)
-
-            Spacer()
-
-            Button(action: { dismiss() }) {
-                Text("Done")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .font(.headline)
+                .padding(.bottom, 24)
             }
-            .background(Color(red: 235/255, green: 120/255, blue: 78/255))
-            .foregroundColor(.white)
-            .cornerRadius(20)
-            .padding(.horizontal, 36)
-            .padding(.bottom, 24)
+           
         }
         .background(Color(red: 234/255, green: 242/255, blue: 242/255))
         .ignoresSafeArea(edges: .bottom)
@@ -72,6 +114,7 @@ struct WeekRowView: View {
             ForEach(currentWeekDates(), id: \.self) { d in
                 let iso = d.isoDateString
                 let isDone = datesSet.contains(iso)
+                let isToday = calendar.isDateInToday(d)
                 let short = String(calendar.shortWeekdaySymbols[calendar.component(.weekday, from: d) - 1].prefix(1))
                 ZStack {
                     Circle()

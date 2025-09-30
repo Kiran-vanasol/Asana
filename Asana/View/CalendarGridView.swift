@@ -10,48 +10,64 @@ import SwiftUI
 struct CalendarGridView: View {
     let highlightDates: Set<String>
     let columns = Array(repeating: GridItem(.flexible()), count: 7)
+    let month: Date
 
-    private var monthDates: [Date] {
+    private func monthDates(for base: Date) -> [Date] {
         let calendar = Calendar.current
-        let today = Date()
-        guard let range = calendar.range(of: .day, in: .month, for: today),
-              let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: today))
+        guard let range = calendar.range(of: .day, in: .month, for: base),
+              let start = calendar.date(from: calendar.dateComponents([.year, .month], from: base))
         else { return [] }
 
-        let startWeekday = calendar.component(.weekday, from: monthStart) // 1=Sun
-        let blanks = (startWeekday - 1) // blank slots before first day (Sunday-first)
-        var dates: [Date] = []
-        for _ in 0..<blanks { dates.append(Date.distantPast) }
-        for d in range {
-            if let date = calendar.date(byAdding: .day, value: d - 1, to: monthStart) {
-                dates.append(date)
-            }
-        }
-        return dates
+        let blanks = calendar.component(.weekday, from: start) - 1
+        var result = Array(repeating: Date.distantPast, count: blanks)
+        result += range.compactMap { calendar.date(byAdding: .day, value: $0 - 1, to: start) }
+        return result
     }
 
+
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
             HStack {
-                ForEach(["S","M","T","W","T","F","S"], id: \.self) { w in
-                    Text(w).frame(maxWidth: .infinity)
-                }
-            }
+                        ForEach(["S","M","T","W","T","F","S"], id: \.self) { w in
+                            Text(w)
+                                .frame(maxWidth: .infinity)
+                                .font(.caption)          // optional: smaller weekday font
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.bottom, 4)
             LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(monthDates, id: \.self) { d in
+                ForEach(monthDates(for: month), id: \.self) { d in
                     if d == Date.distantPast {
                         Color.clear.frame(height: 36)
                     } else {
                         let iso = d.isoDateString
                         let isHighlighted = highlightDates.contains(iso)
-                        Text(isHighlighted ? "●" : "\(Calendar.current.component(.day, from: d))")
-                            .frame(maxWidth: .infinity, minHeight: 36)
-                            .foregroundColor(isHighlighted ? .white : .primary)
-                            .background(isHighlighted ? Color(red: 235/255, green: 120/255, blue: 78/255) : Color.clear)
-                            .clipShape(Circle())
+                        let isToday = Calendar.current.isDateInToday(d)
+
+                        ZStack {
+                            if isHighlighted {
+                                   RoundedRectangle(cornerRadius: 20)
+                                       .fill(Color.orange.opacity(0.25))
+                                       .padding(4)
+                               }
+                            Text("\(Calendar.current.component(.day, from: d))")
+                                .foregroundColor(isHighlighted ? .orange : .primary)
+                                .fontWeight(isHighlighted ? .bold : .regular)
+
+                            // blue dot for today
+                            if isToday {
+                                Circle()
+                                    .fill(Color.blue)
+                                    .frame(width: 6, height: 6)
+                                    .offset(y: 14)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 36)
                     }
                 }
-            }.padding()
+            }
+
         }
     }
 }
