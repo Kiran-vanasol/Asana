@@ -2,9 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>GIDClientID</key>
-    <string>424706719817-grg2sodudojjjn3dj975vgc7goenabma.apps.googleusercontent.com</string>
-
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -19,5 +16,16 @@
 		</dict>
 		<dict/>
 	</array>
+	<key>GIDClientID</key>
+	<string>424706719817-grg2sodudojjjn3dj975vgc7goenabma.apps.googleusercontent.com</string>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>Intent</string>
+		<string>Intent1</string>
+	</array>
+    <key>IntentsSupported</key>
+    <array>
+        <string>StartAsanaIntent</string>
+    </array>
 </dict>
 </plist>
