@@ -15,17 +15,22 @@
 			</array>
 		</dict>
 		<dict/>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>asanaApp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>asana</string>
+			</array>
+		</dict>
 	</array>
 	<key>GIDClientID</key>
 	<string>424706719817-grg2sodudojjjn3dj975vgc7goenabma.apps.googleusercontent.com</string>
-	<key>INIntentsSupported</key>
-	<array>
-		<string>Intent</string>
-		<string>Intent1</string>
-	</array>
-    <key>IntentsSupported</key>
+    <key>AppIntentsSupported</key>
     <array>
-        <string>StartAsanaIntent</string>
+        <string>OpenAsanaIntent</string>
     </array>
 </dict>
 </plist>

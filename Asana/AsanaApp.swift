@@ -52,17 +52,47 @@ struct AsanaApp: App {
     #endif
 
     @StateObject private var authService = AuthService.shared
+    @StateObject private var coordinator = NavigationCoordinator.shared
+
 
     var body: some Scene {
         WindowGroup {
             NavigationStack {
                 if authService.user != nil {
-                    HomeView() //  already logged in
+                    HomeView()
+                        .navigationDestination(for: AppRoute.self) { route in
+                                                    switch route {
+                                                    case .home: HomeView()
+                                                    case .backPain: BackPainView()
+                                                    case .neckPain: NeckPainView()
+                                                    case .posture: PostureView()
+                                                    case .earthMelody: EarthMelodiesView()
+                                                    case .innerEchoes: InnerEchoesView()
+                                                    case .wavesOfBliss: WavesOfBlissView()
+                                                    }
+                                                }
                 } else {
                     WelcomeView() // first-time or logged-out users
                 }
             }
             .environmentObject(authService)
+            .onOpenURL { url in
+                            handleDeepLink(url)
+                        }
         }
     }
+    private func handleDeepLink(_ url: URL) {
+           guard url.scheme == "asana", url.host == "open" else { return }
+           let id = url.lastPathComponent
+
+           switch id.lowercased() {
+           case "backpain": coordinator.navigateTo(.backPain)
+           case "neckpain": coordinator.navigateTo(.neckPain)
+           case "posture": coordinator.navigateTo(.posture)
+           case "earthmelody": coordinator.navigateTo(.earthMelody)
+           case "innerechoes": coordinator.navigateTo(.innerEchoes)
+           case "wavesofbliss": coordinator.navigateTo(.wavesOfBliss)
+           default: break
+           }
+       }
 }
