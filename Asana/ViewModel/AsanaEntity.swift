@@ -8,18 +8,18 @@
 import AppIntents
 
 // MARK: - Entity
-struct AsanaEntity: AppEntity {
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Asana"
+struct AsanaEntity: AppEntity, Identifiable {
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Asana Pose"
     static var defaultQuery = AsanaQuery()
 
     var id: String
     var name: String
-    var viewType: String 
+    var viewType: String
 
     var displayRepresentation: DisplayRepresentation {
         DisplayRepresentation(
-            title: "\(name)",
-            subtitle: "\(viewType.capitalized)"
+            title: LocalizedStringResource(stringLiteral: name),
+            subtitle: LocalizedStringResource(stringLiteral: viewType.capitalized)
         )
     }
 }
@@ -34,14 +34,13 @@ struct AsanaQuery: EntityQuery {
         Self.allAsanas
     }
 
-    // Sample Asanas + Meditations
+    // Yoga + Meditation poses
     static var allAsanas: [AsanaEntity] = [
-        AsanaEntity(id: "backpain", name: "Yoga for Back Pain", viewType: "asana"),
-        AsanaEntity(id: "neckpain", name: "Yoga for Neck Pain", viewType: "asana"),
-        AsanaEntity(id: "posture", name: "Yoga for Posture", viewType: "asana"),
-        AsanaEntity(id: "earthmelody", name: "Earth Melodies", viewType: "meditate"),
-        AsanaEntity(id: "innerechoes", name: "Inner Echoes", viewType: "meditate"),
-        AsanaEntity(id: "wavesofbliss", name: "Waves of Bliss", viewType: "meditate")
+        AsanaEntity(id: "backpain", name: "Yoga for Back Pain", viewType: "Asana"),
+        AsanaEntity(id: "neckpain", name: "Yoga for Neck Pain", viewType: "Asana"),
+        AsanaEntity(id: "posture", name: "Yoga for Posture", viewType: "Asana"),
+        AsanaEntity(id: "earthmelody", name: "Earth Melodies", viewType: "Meditation"),
+        AsanaEntity(id: "innerechoes", name: "Inner Echoes", viewType: "Meditation"),
+        AsanaEntity(id: "wavesofbliss", name: "Waves of Bliss", viewType: "Meditation")
     ]
 }
-

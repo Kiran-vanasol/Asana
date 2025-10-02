@@ -25,6 +25,7 @@ class NavigationCoordinator: ObservableObject {
     private init() {}
     
     func navigateTo(_ route: AppRoute) {
+        path = NavigationPath()
         path.append(route)
     }
 }
