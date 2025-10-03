@@ -30,7 +30,8 @@
 	<string>424706719817-grg2sodudojjjn3dj975vgc7goenabma.apps.googleusercontent.com</string>
     <key>AppIntentsSupported</key>
     <array>
-        <string>OpenAsanaIntent</string>
+        <string>OpenPoseIntent</string>
+        <string>OpenMeditationIntent</string>
     </array>
 </dict>
 </plist>
