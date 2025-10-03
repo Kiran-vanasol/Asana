@@ -233,9 +233,12 @@ struct WorkoutPlayerView: View {
         .navigationDestination(isPresented: $goToCompleted) {
             WorkoutCompletedView(streakVM: streakVM)
         }
-        .onChange(of: vm.isWorkoutFinished) { finished in
-            if finished { goToCompleted = true }
+        .onChange(of: vm.isWorkoutFinished, initial: false) { oldValue, newValue in
+            if newValue {
+                goToCompleted = true
+            }
         }
+
         .onAppear {
             if vm.currentIndex == 0 && vm.isIntroActive {
                 vm.startIntro()

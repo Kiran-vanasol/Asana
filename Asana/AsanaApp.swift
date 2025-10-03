@@ -54,45 +54,70 @@ struct AsanaApp: App {
     @StateObject private var authService = AuthService.shared
     @StateObject private var coordinator = NavigationCoordinator.shared
 
+    @State private var pendingRoute: AppRoute? = nil
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
+            NavigationStack(path: $coordinator.path) {
                 if authService.user != nil {
                     HomeView()
                         .navigationDestination(for: AppRoute.self) { route in
-                                                    switch route {
-                                                    case .home: HomeView()
-                                                    case .backPain: BackPainView()
-                                                    case .neckPain: NeckPainView()
-                                                    case .posture: PostureView()
-                                                    case .earthMelody: EarthMelodiesView()
-                                                    case .innerEchoes: InnerEchoesView()
-                                                    case .wavesOfBliss: WavesOfBlissView()
-                                                    }
-                                                }
+                            switch route {
+                            case .home: HomeView()
+                            case .backPain: BackPainView()
+                            case .neckPain: NeckPainView()
+                            case .posture: PostureView()
+                            case .earthMelody: EarthMelodiesView()
+                            case .innerEchoes: InnerEchoesView()
+                            case .wavesOfBliss: WavesOfBlissView()
+                            }
+                        }
+                       
+                        .onAppear {
+                            if let route = pendingRoute {
+                                print(" Processing pending route after login: \(route)")
+                                coordinator.navigateTo(route)
+                                pendingRoute = nil
+                            }
+                        }
                 } else {
-                    WelcomeView() // first-time or logged-out users
+                    WelcomeView()
                 }
             }
             .environmentObject(authService)
             .onOpenURL { url in
-                            handleDeepLink(url)
+                if let route = routeForURL(url) {
+                    if authService.user != nil {
+                       
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            print("Navigating immediately to \(route)")
+                            coordinator.navigateTo(route)
                         }
+                    } else {
+                       
+                        print("Queued pending route: \(route)")
+                        pendingRoute = route
+                    }
+                }
+            }
         }
     }
-    private func handleDeepLink(_ url: URL) {
-           guard url.scheme == "asana", url.host == "open" else { return }
-           let id = url.lastPathComponent
 
-           switch id.lowercased() {
-           case "backpain": coordinator.navigateTo(.backPain)
-           case "neckpain": coordinator.navigateTo(.neckPain)
-           case "posture": coordinator.navigateTo(.posture)
-           case "earthmelody": coordinator.navigateTo(.earthMelody)
-           case "innerechoes": coordinator.navigateTo(.innerEchoes)
-           case "wavesofbliss": coordinator.navigateTo(.wavesOfBliss)
-           default: break
-           }
-       }
+    private func routeForURL(_ url: URL) -> AppRoute? {
+        guard url.scheme == "asana", url.host == "open" else { return nil }
+        let id = url.lastPathComponent.lowercased()
+        print("👉 [DeepLink] Received URL: \(url.absoluteString), parsed id = \(id)")
+
+        switch id {
+        case "home": return .home
+        case "backpain": return .backPain
+        case "neckpain": return .neckPain
+        case "posture": return .posture
+        case "earthmelody": return .earthMelody
+        case "innerechoes": return .innerEchoes
+        case "wavesofbliss": return .wavesOfBliss
+        default: return nil
+        }
+    }
+
 }

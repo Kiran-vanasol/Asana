@@ -22,10 +22,15 @@ class NavigationCoordinator: ObservableObject {
     
     @Published var path = NavigationPath()
     
+    
     private init() {}
     
     func navigateTo(_ route: AppRoute) {
-        path = NavigationPath()
-        path.append(route)
-    }
+          print(" NavigationCoordinator: navigating to \(route)")
+
+          //  Safe reset: build a fresh path with the new destination
+          var newPath = NavigationPath()
+          newPath.append(route)
+          path = newPath
+      }
 }

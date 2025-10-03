@@ -13,22 +13,30 @@ struct AsanaAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: OpenPoseIntent(),
             phrases: [
-                "Open \(.applicationName) pose",
-                "Open \(.applicationName) \(\.$pose)"
+                "Open \(.applicationName) pose"
             ],
-            shortTitle: "Open Pose",
-            systemImageName: "figure.yoga"
+            shortTitle: "Asana Home ",
+            systemImageName: "figure.mind.and.body"
         )
+                         
+                AppShortcut(
+                    intent: OpenBackPainIntent(),
+                    phrases: [
+                        "Open \(.applicationName) Back Pain"
+                    ],
+                    shortTitle: "Back Pain",
+                    systemImageName: "figure.yoga"
+                )
 
-        AppShortcut(
-            intent: OpenMeditationIntent(),
-            phrases: [
-                "Open \(.applicationName) meditation",
-                "Play \(.applicationName) \(\.$meditation)"
-            ],
-            shortTitle: "Open Meditation",
-            systemImageName: "music.note"
-        )
+                // New direct shortcut: Earth Melody
+                AppShortcut(
+                    intent: OpenEarthMelodyIntent(),
+                    phrases: [
+                        "Open \(.applicationName) Earth Melody"
+                    ],
+                    shortTitle: "Earth Melody",
+                    systemImageName: "music.quarternote.3"
+                )
     }
 
     // optional: choose a tile color (iOS 17+)

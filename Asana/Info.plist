@@ -31,7 +31,8 @@
     <key>AppIntentsSupported</key>
     <array>
         <string>OpenPoseIntent</string>
-        <string>OpenMeditationIntent</string>
+        <string>OpenBackPainIntent</string>
+        <string>OpenEarthMelodyIntent</string>
     </array>
 </dict>
 </plist>

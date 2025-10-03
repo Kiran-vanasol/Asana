@@ -122,7 +122,7 @@ struct MusicPlayerView: View {
                 }
             }
         }
-        .onChange(of: vm.isFinished) { finished in
+        .onChange(of: vm.isFinished, initial: false) { _, finished in
             if finished { goToCompleted = true }
         }
         .navigationDestination(isPresented: $goToCompleted) {

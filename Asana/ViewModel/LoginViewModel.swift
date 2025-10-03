@@ -83,7 +83,7 @@ class LoginViewModel: ObservableObject {
                 } else if let user = authResult?.user {
                     print("Google login success: \(user.email ?? "unknown")")
                     self.errorMessage = nil
-                    AuthService.shared.user = user   //  notify AuthService
+                    AuthService.shared.user = user  
                 }
             }
         }

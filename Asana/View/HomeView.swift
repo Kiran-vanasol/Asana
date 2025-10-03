@@ -11,7 +11,7 @@ struct HomeView: View {
     @StateObject private var vm = HomeViewModel()
 
     var body: some View {
-        NavigationStack {
+       
             ZStack {
                 Color(hex: "#EAF2F2")
                     .ignoresSafeArea()
@@ -72,6 +72,6 @@ struct HomeView: View {
             .task {
                 await vm.fetchHomeData()
             }
-        }
+        
     }
 }

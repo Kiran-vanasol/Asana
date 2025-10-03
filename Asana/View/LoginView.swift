@@ -165,8 +165,8 @@ struct LoginView: View {
                 .ignoresSafeArea()
             )
             // 👇 Listen to AuthService instead of isLoggedIn
-            .onChange(of: authService.user) { user in
-                navigateToHome = (user != nil)
+            .onChange(of: authService.user, initial: false) { oldUser, newUser in
+                navigateToHome = (newUser != nil)
             }
             .navigationDestination(isPresented: $navigateToHome) {
                 HomeView()
