@@ -10,30 +10,15 @@ import SwiftUI
 struct ProfileView: View {
     @StateObject private var vm = ProfileViewModel()
     @Environment(\.dismiss) private var dismiss
-    @State private var showStreaks = false ///   to show streaksss
+    @State private var showStreaks = false
+    @State private var showReminder: Bool = false
+    @State private var showFaq: Bool = false
+    @State private var showAccount: Bool = false
 
     var body: some View {
         VStack(spacing: 24) {
-            
-            // Header
-            HStack {
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark")
-                        .font(.title2)
-                        .foregroundColor(.black)
-                }
-                Spacer()
-                Text("Profile")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(.black)
-                Spacer()
-                // Keep space for symmetry
-                Color.clear.frame(width: 24, height: 24)
-            }
-            .padding(.horizontal)
-            .padding(.top, 12)
-
             // User Info Card
+            Spacer()
             if let profile = vm.profile {
                 HStack(spacing: 12) {
                     if let url = profile.photoURL {
@@ -70,20 +55,30 @@ struct ProfileView: View {
                 .padding(.horizontal)
             }
 
-        
-            SectionView(title: "SETTINGS", items: [
-                "Manage Account", "Current Streak", "Reminders"
-            ]){ tapped in
-                if tapped == "Current Streak" {
-                    showStreaks = true
+            ScrollView{
+                SectionView(title: "SETTINGS", items: [
+                    "Manage Account", "Current Streak", "Reminders"
+                ]){ tapped in
+                    if tapped == "Current Streak" {
+                        showStreaks = true
+                    } else if tapped == "Reminders"{
+                        showReminder = true
+                    } else if tapped == "Manage Account"{
+                        showAccount = true
+                    }
+                }
+                
+                
+                SectionView(title: "SUPPORT", items: [
+                    "Frequently Asked Questions", "Contact Support", "Privacy Policy"
+                ]){ tapped in
+                    if tapped == "Frequently Asked Questions" {
+                        showFaq = true
+                    } else if tapped == "Privacy Policy"{
+                        openURL("https://www.vanasol.com/asana-privacy-policy/")
+                    }
                 }
             }
-
-            
-            SectionView(title: "SUPPORT", items: [
-                "Frequently Asked Questions", "Contact Support", "Privacy Policy"
-            ])
-
             Spacer()
 
             
@@ -95,12 +90,38 @@ struct ProfileView: View {
             .padding(.bottom, 20)
 
         }
-        .navigationBarHidden(true)
-        .background(Color(hex: "#F8F8F8").ignoresSafeArea())
+        .background(Color(hex: "#EAF2F2").ignoresSafeArea())
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+          
+    
+            ToolbarItem(placement: .principal) {
+                Text("Profile")
+                    .font(.system(size: 29, weight: .bold, design: .serif))
+                    .foregroundColor(Color(hex: "#EB784E"))
+            }
+        }
         
         .sheet(isPresented: $showStreaks) {
                     AllStreaksCalendarView()   
                 }
+        .sheet(isPresented: $showReminder){
+             ReminderView()
+        }
+        .sheet(isPresented: $showFaq){
+             FAQView()
+        }
+        .sheet(isPresented: $showAccount) {
+            ManageAccountView()
+        }
+        
+    }
+    
+    private func openURL(_ urlString: String) {
+        
+        guard let url = URL(string: urlString) else { return }
+        UIApplication.shared.open(url)
+        
     }
 }
 
@@ -121,7 +142,7 @@ struct SectionView: View {
             ForEach(items, id: \.self) { item in
                 Button(action: { onItemTap?(item) }) {
                     Text(item)
-                        .font(.system(size: 16))
+                        .font(.system(size: 16, weight: .bold, design: .serif))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()

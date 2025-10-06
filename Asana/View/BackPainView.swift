@@ -63,7 +63,7 @@ struct BackPainView: View {
 
             // Start Button
             NavigationLink {
-                WorkoutIntroView(
+                WorkoutPlayerView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
                         workoutType: "BackPain",

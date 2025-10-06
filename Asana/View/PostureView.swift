@@ -62,7 +62,7 @@ struct PostureView: View {
 
             // Start Button
             NavigationLink {
-                WorkoutIntroView(
+                WorkoutPlayerView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
                         workoutType: "PostureReset",

@@ -63,7 +63,7 @@ struct NeckPainView: View {
 
             // Start Button
             NavigationLink {
-                WorkoutIntroView(
+                WorkoutPlayerView(
                     vm: WorkoutViewModel(
                         poses: viewModel.poses,
                         workoutType: "NeckPain",

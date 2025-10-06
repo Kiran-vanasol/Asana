@@ -241,6 +241,7 @@ struct WorkoutPlayerView: View {
 
         .onAppear {
             if vm.currentIndex == 0 && vm.isIntroActive {
+                vm.playIntroSound(for: vm.workoutType)
                 vm.startIntro()
             }
         }

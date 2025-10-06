@@ -155,7 +155,7 @@ class WorkoutViewModel: ObservableObject {
         AudioManager.shared.playSound(folder: "Audio/\(workoutType)", fileName: poseName)
     }
 
-    private func playIntroSound(for workoutType: String) {
+     func playIntroSound(for workoutType: String) {
         var fileName = "PostureReset" // default
         switch workoutType {
         case "PostureReset": fileName = "Lets Start1"
